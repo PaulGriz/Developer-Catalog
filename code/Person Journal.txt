@@ -1,0 +1,47 @@
+--------------------------------------------------------------------------------
+       Personal Journal for Tracking Thoughts Throughout Development
+--------------------------------------------------------------------------------
+
+-----------------
+SQLAlchemy Tips:
+-----------------
+
+- I can filter multiple parameters by -> filter_by(x=x, y=y, z=z)
+- SQLAlchemy can also connect to database structures other than SQLite
+
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-----------------
+# TODO
+-----------------
+
+     1.) Need to add category items class after:
+          A.) Category and CategoryList is finished in resources/category.py
+          B.) Class CategoryModel is finished in models/category.py
+
+     2.) Set every category with matching category items
+          A.) Category items will be text descriptions at first
+
+     3.) Add Google and Github OAth into the site and possibly remove
+          the current authentication for security
+
+     4.) Build a working website for users to interact with: CRUD
+
+     5.) Allow deeper features in the category items
+          A.) Pictures
+          B.) Videos
+          C.) Codepen Plugin
+          D.) Other useful features for users
+
+     6.) Add JavaScript to the website for an added fluid feel
+
+--------------------------------------------------------------------------------

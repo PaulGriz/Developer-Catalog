@@ -35,6 +35,7 @@ class Category(Resource):
         # -------------------------------------------------------------------------------
         category = CategoryModel.find_by_name(name)
         if category:
+            # Return data in JSON is required by Parameters in CategoryModel
             return category.json()
         return {'message' : 'Category not found'}, 404
 
@@ -50,10 +51,11 @@ class Category(Resource):
         category = CategoryModel(name, data['category_items'])
 
         try:
-            category.insert()
+            category.save_to_db()
         except:
             {"message": "An error inserting the category."}, 500
 
+        # Return data in JSON is required by Parameters in CategoryModel
         return category.json(), 201
 
 
@@ -64,31 +66,28 @@ class Category(Resource):
         data = Category.parser.parse_args()
 
         category = CategoryModel.find_by_name(name)
-        updated_category = CategoryModel(name, data['category_items'])
 
         if category is None:
-            try:
-                updated_category.insert()
-            except:
-                return {"message": "An error inserting the category."}, 500
+            # If category not found  --> then make a new category
+            category = CategoryModel(name, data['category_items'])
         else:
-            try:
-                updated_category.update()
-            except:
-                return {"message": "An error inserting the category."}, 500
-        return updated_category.json()
+            # If category was found --> then edit category
+            category.category_items = data['category_items']
+
+        # save_to_db from Class CategoryModel in file --> models / category.py
+        category.save_to_db()
+
+        # Return data in JSON is required by Parameters in CategoryModel
+        return category.json()
 
 
     def delete(self, name):
         # -------------------------------------------------------------------------------
         # DELETE---> a single category
         # -------------------------------------------------------------------------------
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        # Name = name from URL
-        query = "DELETE FROM categories WHERE name=?"
-        cursor.execute(query, (name,))
+        category = Category.find_by_name(name)
 
-        connection.commit()
-        connection.close()
-        return {'message': 'Item deleted'}
+        if category:
+            category.delete_from_db()
+
+        return {'message': 'Category has been deleted'}

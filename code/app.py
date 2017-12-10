@@ -7,6 +7,8 @@ from resources.user import UserRegister
 from resources.category import Category, CategoryList
 
 app = Flask(__name__)
+# Setting the App's connection to data.db
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 # Disabling Tracker to Improve Server Responce Times
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "paulgriztest"
