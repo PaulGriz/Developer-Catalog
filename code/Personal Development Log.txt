@@ -2,12 +2,43 @@
 |                       Personal Development Log                               |
 --------------------------------------------------------------------------------
 
+-----------------------
+| Python Syntax Tips:
+-----------------------
+
+|---> "The Keyword Argument Unpacking Syntax"
+          (NOTE: Use this with a parser. This requires each parameter to
+               be a correct order every time they're passed to a function.)
+
+     def function_name(parameter 1, parameter 2, parameter 3):
+          list = {parameter 1, parameter 2, parameter 3}
+          function_name(**list)
+
+
+--------------------------------------------------------------------------------
+
 --------------------
 | SQLAlchemy Tips:
 --------------------
 
+|---> Easy Example for Finding Data:
+
+     @classmethod
+     def function_name(cls, some_parameters):
+          return cls.query.filter_by(parameters=parameters).first()
+
+|---> Easy Example for Saving Data:
+          (NOTE: [To Delete] Just replace .add with .delete)
+
+     @classmethod
+     def function_name(self):
+          db.session.add(self)
+          db.session.commit()
+
 | - I can filter multiple parameters by -> filter_by(x=x, y=y, z=z)
+
 | - SQLAlchemy can also connect to database structures other than SQLite
+
 
 --------------------------------------------------------------------------------
 
