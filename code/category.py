@@ -26,15 +26,16 @@ class Category(Resource):
         help="This field cannot be left blank"
     )
 
+    @classmethod
+    def insert(cls, category):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
 
-    def get(self, name):
-        # -------------------------------------------------------------------------------
-        # get a single category
-        # -------------------------------------------------------------------------------
-        category = self.find_by_name(name)
-        if category:
-            return category
-        return {'message' : 'Category not found'}, 404
+        query = "INSERT INTO categories VALUES (?, ?)"
+        cursor.execute(query, (category['name'], category['category_items']))
+
+        connection.commit()
+        connection.close()
 
     @classmethod
     def find_by_name(cls, name):
@@ -50,6 +51,16 @@ class Category(Resource):
             return {'category' : {'name' : row[0], 'category_items' : row[1]}}
 
 
+    def get(self, name):
+        # -------------------------------------------------------------------------------
+        # get a single category
+        # -------------------------------------------------------------------------------
+        category = self.find_by_name(name)
+        if category:
+            return category
+        return {'message' : 'Category not found'}, 404
+
+
     def post(self, name):
         # -------------------------------------------------------------------------------
         # post a new category
@@ -58,17 +69,12 @@ class Category(Resource):
             return {'message': "A category named '{}' already exists.".format(name)}, 400
 
         data = Category.parser.parse_args()
-
         category = {'name' : name, 'category_items' : data['category_items']}
 
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "INSERT INTO categories VALUES (?, ?)"
-        cursor.execute(query, (category['name'], category['category_items']))
-
-        connection.commit()
-        connection.close()
+        try:
+            self.insert(category)
+        except:
+            {"message": "An error inserting the category."}, 500
 
         return category, 201
 
