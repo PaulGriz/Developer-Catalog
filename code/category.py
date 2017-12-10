@@ -50,6 +50,17 @@ class Category(Resource):
         if row:
             return {'category' : {'name' : row[0], 'category_items' : row[1]}}
 
+    @classmethod
+    def update(cls, category):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "UPDATE categories SET category_items=? WHERE name=?"
+        cursor.execute(query, (category['category_items'], category['name']))
+
+        connection.commit()
+        connection.close()
+
 
     def get(self, name):
         # -------------------------------------------------------------------------------
@@ -79,6 +90,28 @@ class Category(Resource):
         return category, 201
 
 
+    def put(self, name):
+        # -------------------------------------------------------------------------------
+        # PUT---> Edit a single category
+        # -------------------------------------------------------------------------------
+        data = Category.parser.parse_args()
+
+        category = self.find_by_name(name)
+        updated_category = {'name': name, 'category_items': data['category_items']}
+
+        if category is None:
+            try:
+                self.insert(updated_category)
+            except:
+                return {"message": "An error inserting the category."}, 500
+        else:
+            try:
+                self.update(updated_category)
+            except:
+                return {"message": "An error inserting the category."}, 500
+        return updated_category
+
+
     def delete(self, name):
         # -------------------------------------------------------------------------------
         # DELETE---> a single category
@@ -92,19 +125,3 @@ class Category(Resource):
         connection.commit()
         connection.close()
         return {'message': 'Item deleted'}
-
-
-    def put(self, name):
-        # -------------------------------------------------------------------------------
-        # PUT---> Edit a single category
-        # -------------------------------------------------------------------------------
-        data = Category.parser.parse_args()
-
-        category = next(filter(lambda x: x['name'] == name, categories), None)
-        if category is None:
-            category = {'name': name, 'date_posted': data['date_posted']}
-            categories.append(category)
-        else:
-            category.update(data)
-
-        return category
