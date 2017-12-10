@@ -85,7 +85,7 @@ class Category(Resource):
         # -------------------------------------------------------------------------------
         # DELETE---> a single category
         # -------------------------------------------------------------------------------
-        category = Category.find_by_name(name)
+        category = CategoryModel.find_by_name(name)
 
         if category:
             category.delete_from_db()

@@ -1,16 +1,31 @@
 --------------------------------------------------------------------------------
-       Personal Journal for Tracking Thoughts Throughout Development
+|                       Personal Development Log                               |
 --------------------------------------------------------------------------------
 
------------------
-SQLAlchemy Tips:
------------------
+--------------------
+| SQLAlchemy Tips:
+--------------------
 
-- I can filter multiple parameters by -> filter_by(x=x, y=y, z=z)
-- SQLAlchemy can also connect to database structures other than SQLite
+| - I can filter multiple parameters by -> filter_by(x=x, y=y, z=z)
+| - SQLAlchemy can also connect to database structures other than SQLite
 
 --------------------------------------------------------------------------------
 
+-----------------------
+| Models vs Resources
+-----------------------
+
+| Models -->  Are the internal representations of the data. Only for Server to
+          Data Communication.
+
+| Resources --> Are the external representations of the data. All interactions
+          between User and Server.
+
+          User --> Resources --> Server --> Models --> Data
+                              OR
+          Data --> Models --> Server --> Resources --> User
+
+--------------------------------------------------------------------------------
 
 
 
