@@ -3,8 +3,8 @@ from flask_restful import Api
 from flask_jwt import JWT
 from security import authenicate, identity
 
-from user import UserRegister
-from category import Category, CategoryList
+from resources.user import UserRegister
+from resources.category import Category, CategoryList
 
 """ Check Documentation.txt for comments too long to fit within program.
 Comments will be in format ---> "Doc--[file name]--[Comment ID]"

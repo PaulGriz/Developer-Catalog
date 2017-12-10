@@ -16,3 +16,6 @@ Requirements:
 
 5.) Flask JWT
 ---> Version Used: 0.3.2
+
+6.) Flask-SQLAlchemy
+---> Version Used: 1.1.15
