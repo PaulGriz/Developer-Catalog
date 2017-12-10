@@ -1,4 +1,3 @@
-import sqlite3
 from db import db
 
 
@@ -13,39 +12,21 @@ class CategoryModel(db.Model):
         self.name = name
         self.category_items = category_items
 
+    @classmethod
+    def find_by_name(cls, name):
+        # Translation: SELECT * FROM categories WHERE name=name LIMIT 1
+        # Pulls single category by it's name from db
+        return cls.query.filter_by(name=name).first()
+
     def json(self):
         return {'name': self.name, 'category_items': self.category_items}
 
-    @classmethod
-    def find_by_name(cls, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+    def save_to_db(self):
+        # sqlite3 query translation = "INSERT INTO categories VALUES (?, ?)"
+        # Inserts new data and updates excising data to db
+        db.session.add(self)
+        db.session.commit()
 
-        query = "SELECT * FROM categories WHERE name=?"
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-
-        if row:
-            # returns row[0] to name and row[1] to category_items
-            return cls(*row)
-
-    def insert(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "INSERT INTO categories VALUES (?, ?)"
-        cursor.execute(query, (self.name, self.category_items))
-
-        connection.commit()
-        connection.close()
-
-    def update(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "UPDATE categories SET category_items=? WHERE name=?"
-        cursor.execute(query, (self.category_items, self.name))
-
-        connection.commit()
-        connection.close()
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()

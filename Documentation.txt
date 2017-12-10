@@ -1,39 +1,7 @@
 Logic Explained:
 
-------------------------------------------------------------------------------------------------
--------------------------> app.py references:
-------------------------------------------------------------------------------------------------
+[ Will explain program flow after backend is finished ]
 
-1.) Filter function iterates through the list categoies, and only
-     | returns x if x in categories = parameter name from Resource. Next
-     | Function is used to only return 1 result from Filter. If no results
-     | are returned from filter, None is used to prevent errors.
+[ Will write up documentation for developers using the api ]
 
-2.) Function checks if name already exists.
-     | If name already exists, messege is shown to user. 
-     | If name not found, new category is posted. 
-     | The name is the primary key for storing each category. 
-     | No duplicates are allowed. 
-
-
-----> [End of app.py]
-------------------------------------------------------------------------------------------------
--------------------------> security.py references:
-------------------------------------------------------------------------------------------------
-
-1.) The authenicate function maps a user by username. 
-     | If username not found, return none. 
-     | If username found, username is matched with password,
-	If password matched, return user.
-     | If sucessful, JWT makes a token which is used in app.py 
-     | This Token is used within the identity function 
-
-2.) The identity function and payload parameter are apart of the JWT library.
-     | user_id is pulled from the JWT payload's 'identity'.
-     | The 'identity' is a token make by the authenicate function above.
-     | the user_id from payload is then used to pull from the userid_mapping dictionary.
-
-
-
-
-----> [End of security.py]
+[ Will explain requirements / setup process ]

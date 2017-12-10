@@ -5,7 +5,7 @@ cursor = connection.cursor()
 
 create_table = "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username text, password text)"
 cursor.execute(create_table)
-create_table = "CREATE TABLE IF NOT EXISTS categories (name text, category_items text)"
+create_table = "CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name text, category_items text)"
 cursor.execute(create_table)
 
 connection.commit()
