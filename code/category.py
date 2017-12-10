@@ -13,7 +13,9 @@ class CategoryList(Resource):
 
         query = "SELECT * FROM categories"
         result = cursor.execute(query)
-        categories = result.fetchall()
+        categories = []
+        for row in result:
+            categories.append({'name': row[0], 'category_items': row[1]})
         connection.close()
         return {'categories' : categories}
 
