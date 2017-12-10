@@ -35,7 +35,7 @@ class Category(Resource):
         # -------------------------------------------------------------------------------
         category = CategoryModel.find_by_name(name)
         if category:
-            return category.json
+            return category.json()
         return {'message' : 'Category not found'}, 404
 
 

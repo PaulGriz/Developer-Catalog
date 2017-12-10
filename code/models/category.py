@@ -1,7 +1,14 @@
 import sqlite3
+from db import db
 
 
-class CategoryModel:
+class CategoryModel(db.Model):
+    __tablename__ = 'categories'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    category_items = db.Column(db.String(80))
+
     def __init__(self, name, category_items):
         self.name = name
         self.category_items = category_items
