@@ -1,6 +1,7 @@
 import sqlite3
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
+from models.category import CategoryModel
 
 
 class CategoryList(Resource):
@@ -28,49 +29,13 @@ class Category(Resource):
         help="This field cannot be left blank"
     )
 
-    @classmethod
-    def insert(cls, category):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "INSERT INTO categories VALUES (?, ?)"
-        cursor.execute(query, (category['name'], category['category_items']))
-
-        connection.commit()
-        connection.close()
-
-    @classmethod
-    def find_by_name(cls, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "SELECT * FROM categories WHERE name=?"
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-
-        if row:
-            return {'category' : {'name' : row[0], 'category_items' : row[1]}}
-
-    @classmethod
-    def update(cls, category):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "UPDATE categories SET category_items=? WHERE name=?"
-        cursor.execute(query, (category['category_items'], category['name']))
-
-        connection.commit()
-        connection.close()
-
-
     def get(self, name):
         # -------------------------------------------------------------------------------
         # get a single category
         # -------------------------------------------------------------------------------
-        category = self.find_by_name(name)
+        category = CategoryModel.find_by_name(name)
         if category:
-            return category
+            return category.json
         return {'message' : 'Category not found'}, 404
 
 
@@ -78,18 +43,18 @@ class Category(Resource):
         # -------------------------------------------------------------------------------
         # post a new category
         # -------------------------------------------------------------------------------
-        if self.find_by_name(name):
+        if CategoryModel.find_by_name(name):
             return {'message': "A category named '{}' already exists.".format(name)}, 400
 
         data = Category.parser.parse_args()
-        category = {'name' : name, 'category_items' : data['category_items']}
+        category = CategoryModel(name, data['category_items'])
 
         try:
-            self.insert(category)
+            category.insert()
         except:
             {"message": "An error inserting the category."}, 500
 
-        return category, 201
+        return category.json(), 201
 
 
     def put(self, name):
@@ -98,20 +63,20 @@ class Category(Resource):
         # -------------------------------------------------------------------------------
         data = Category.parser.parse_args()
 
-        category = self.find_by_name(name)
-        updated_category = {'name': name, 'category_items': data['category_items']}
+        category = CategoryModel.find_by_name(name)
+        updated_category = CategoryModel(name, data['category_items'])
 
         if category is None:
             try:
-                self.insert(updated_category)
+                updated_category.insert()
             except:
                 return {"message": "An error inserting the category."}, 500
         else:
             try:
-                self.update(updated_category)
+                updated_category.update()
             except:
                 return {"message": "An error inserting the category."}, 500
-        return updated_category
+        return updated_category.json()
 
 
     def delete(self, name):
