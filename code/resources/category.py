@@ -5,20 +5,9 @@ from models.category import CategoryModel
 
 class CategoryList(Resource):
     def get(self):
-        # -------------------------------------------------------------------------------
-        # GET ---> all Categories
-        # -------------------------------------------------------------------------------
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "SELECT * FROM categories"
-        result = cursor.execute(query)
-        categories = []
-        for row in result:
-            categories.append({'name': row[0], 'category_items': row[1]})
-        connection.close()
-        return {'categories' : categories}
-
+        # Could have also used a lambda
+        # --> Example: list(map(lambda x: x.json(), CategoryModel.query.all()))
+        return {'categories': [x.json() for x in CategoryModel.query.all()]}
 
 class Category(Resource):
     parser = reqparse.RequestParser()
