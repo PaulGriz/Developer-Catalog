@@ -1,7 +1,52 @@
 Developer-Catalog
 =============
 
-TODO List
+## File Structure
+
+     Docs
+
+     |----> All Documentation
+
+     models
+
+     |----> Data models   
+          - category.py
+          - items.py
+          - user.py
+
+     resources
+
+     |----> Api Endpoint Resources
+          - category.py
+          - items.py
+          - user.py
+
+     Templates
+
+     |----> All HTML, CSS, and JS Files
+          - Not Developed Yet
+
+     ### Main Project Files
+
+     app.py
+     db.py
+     security.py
+     run.py
+
+     ### Heroku Files
+
+     Procfile
+     requirements.txt
+     runtime.txt
+     uwsgi.ini
+
+     ### Github Files
+
+     README.md
+     .gitignore
+
+
+## TODO List
 
      1.) Need to add category items class after:
 
@@ -26,21 +71,17 @@ TODO List
 
      6.) Add JavaScript to the website for an added fluid feel
 
-Requirements: 
+## Requirements:
 
-1.) Virtualenv [Link](https://virtualenv.pypa.io/en/stable/)
+     1.) Virtualenv
+          [Link](https://virtualenv.pypa.io/en/stable/)
 
-2.) Python 3
-     ---> Version Used: Python 3.6.3
+     2.) Python 3
 
-3.) Flask 
-     ---> Version Used: Flask 0.12.2
+     3.) Flask
 
-4.) Flask RESTful 
-     ---> Version Used: Flask_RESTful 0.3.6
+     4.) Flask RESTful
 
-5.) Flask JWT
-     ---> Version Used: 0.3.2
+     5.) Flask JWT
 
-6.) Flask-SQLAlchemy
-     ---> Version Used: 1.1.15
+     6.) Flask-SQLAlchemy
