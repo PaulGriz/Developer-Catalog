@@ -4,25 +4,21 @@ Developer-Catalog
 ## File Structure
 
      Docs
-
      |----> All Documentation
 
      models
-
      |----> Data models   
           - category.py
           - items.py
           - user.py
 
      resources
-
      |----> Api Endpoint Resources
           - category.py
           - items.py
           - user.py
 
      Templates
-
      |----> All HTML, CSS, and JS Files
           - Not Developed Yet
 
