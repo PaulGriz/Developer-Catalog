@@ -4,12 +4,7 @@ from models.category import CategoryModel
 
 
 class Category(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('items',
-        type=str,
-        required=True,
-        help="This field cannot be left blank"
-    )
+    
 
     def get(self, name):
         # -------------------------------------------------------------------------------
@@ -35,32 +30,10 @@ class Category(Resource):
         try:
             category.save_to_db()
         except:
-            {"message": "An error inserting the category."}, 500
+            return {"message": "An error inserting the category."}, 500
 
         # Return data in JSON is required by Parameters in CategoryModel
         return category.json(), 201
-
-
-    def put(self, name):
-        # -------------------------------------------------------------------------------
-        # PUT---> Edit a single category
-        # -------------------------------------------------------------------------------
-        data = Category.parser.parse_args()
-
-        category = CategoryModel.find_by_name(name)
-
-        if category is None:
-            # If category not found  --> then make a new category
-            category = CategoryModel(name, data['items'])
-        else:
-            # If category was found --> then edit category
-            category.category_items = data['items']
-
-        # save_to_db from Class CategoryModel in file --> models / category.py
-        category.save_to_db()
-
-        # Return data in JSON is required by Parameters in CategoryModel
-        return category.json()
 
 
     def delete(self, name):
@@ -79,4 +52,4 @@ class CategoryList(Resource):
     def get(self):
         # Could have also used a lambda
         # --> Example: list(map(lambda x: x.json(), CategoryModel.query.all()))
-        return {'categories': [x.json() for x in CategoryModel.query.all()]}
+        return {'categories': [category.json() for category in CategoryModel.query.all()]}

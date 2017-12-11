@@ -50,7 +50,7 @@ class Item(Resource):
 
     def delete(self, name):
         item = ItemsModel.find_by_name(name)
-        
+
         if item:
             item.delete_from_db()
 
@@ -59,4 +59,4 @@ class Item(Resource):
 
 class ItemList(Resource):
     def get(self):
-        return {'items': list(map(lambda x: x.json(), ItemsModel.query.all()))}
+        return {'items': [x.json() for x in ItemsModel.query.all()]}

@@ -5,6 +5,7 @@ from flask_jwt import JWT
 from security import authenicate, identity
 from resources.user import UserRegister
 from resources.category import Category, CategoryList
+from resources.items import Item, ItemList
 
 app = Flask(__name__)
 # Setting the App's connection to data.db
@@ -23,14 +24,17 @@ def create_tables():
 jwt = JWT(app, authenicate, identity)
 
 # ------------------------------------------------------------------------------
-# 1.) GET All Categories --> /catalog
-api.add_resource(CategoryList, '/catalog')
+# ---------> API Endpoints
+# ------------------------------------------------------------------------------
 
-# 2.) GET 1 SINGLE Category --> /catalog/<string:name>
+api.add_resource(CategoryList, '/catalog')
 api.add_resource(Category, '/catalog/<string:name>')
 
-# 3.) Allow user's to UserRegister
+api.add_resource(Item, '/catalog/items')
+api.add_resource(ItemList, '/catalog/items/<string:name>')
+
 api.add_resource(UserRegister, '/register')
+
 # ------------------------------------------------------------------------------
 
 
