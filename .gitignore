@@ -1,10 +1,11 @@
 *.com
+__pycache__/
+*.pyc
 *.class
 *.dll
 *.exe
 *.o
 *.so
-*.pyc
 *.pyo
 *.7z
 *.dmg
