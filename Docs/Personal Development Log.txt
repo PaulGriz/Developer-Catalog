@@ -2,6 +2,24 @@
 |                       Personal Development Log                               |
 --------------------------------------------------------------------------------
 
+---------------------------
+| Heroku Publishing Tips:
+---------------------------
+
+| Two databases can be defined in the application. One for Heroku's End and the
+     other for local Testing / Development
+
+|---> Example:
+|---> app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                            'sqlite://data.db')
+
+|---> Where:
+     Parameter 1 is Heroku's Database connection
+     Parameter 2 is the local database connection
+
+
+--------------------------------------------------------------------------------
+
 -----------------------
 | Python Syntax Tips:
 -----------------------
@@ -10,6 +28,7 @@
           (NOTE: Use this with a parser. This requires each parameter to
                be a correct order every time they're passed to a function.)
 
+|---> Example:
      def function_name(parameter 1, parameter 2, parameter 3):
           list = [parameter 1, parameter 2, parameter 3]
           function_name(**list)
@@ -23,6 +42,7 @@
 
 |---> Easy Example for Finding Data:
 
+|---> Example:
      @classmethod
      def function_name(cls, some_parameters):
           return cls.query.filter_by(parameters=parameters).first()
@@ -30,6 +50,7 @@
 |---> Easy Example for Saving Data:
           (NOTE: [To Delete] Just replace .add with .delete)
 
+|---> Example:
      @classmethod
      def function_name(self):
           db.session.add(self)

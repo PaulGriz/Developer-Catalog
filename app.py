@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
@@ -7,9 +8,20 @@ from resources.user import UserRegister
 from resources.category import Category, CategoryList
 from resources.items import Item, ItemList
 
+
+# ------------------------------------------------------------------------------
+# ---------> Flask App Setup and Configurations
+# ------------------------------------------------------------------------------
+
 app = Flask(__name__)
-# Setting the App's connection to data.db
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+
+""" The Database is a Postgres Database hosted by Heroku
+    The appliction's --> 'DATABASE_URL' is given by Heroku in the settings
+    The second opion --> 'sqlite://data.db' is for local Development
+    If you run the appliction locally the data.db will be created """
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite://data.db')
+
 # Disabling Tracker to Improve Server Responce Times
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "paulgriztest"
@@ -19,19 +31,25 @@ api = Api(app)
 jwt = JWT(app, authenicate, identity)
 
 # ------------------------------------------------------------------------------
-# ---------> API Endpoints
+# ---------> End of Flask App Setup and Configurations
 # ------------------------------------------------------------------------------
 
+
+# ------------------------------------------------------------------------------
+# ---------> API Endpoints
+# ------------------------------------------------------------------------------
+#---> Categories
 api.add_resource(CategoryList, '/catalog')
 api.add_resource(Category, '/catalog/<string:name>')
-
+#---> Items
 api.add_resource(ItemList, '/catalog/items')
 api.add_resource(Item, '/catalog/items/<string:name>')
-
+#---> Authentication
 api.add_resource(UserRegister, '/register')
 
 # ------------------------------------------------------------------------------
-
+# ---------> End of API Endpoints
+# ------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     # Importing DB inside the if statement to prevent circular importing
