@@ -38,6 +38,7 @@ jwt = JWT(app, authenicate, identity)
 # ------------------------------------------------------------------------------
 # ---------> API Endpoints
 # ------------------------------------------------------------------------------
+
 #---> Categories
 api.add_resource(CategoryList, '/catalog')
 api.add_resource(Category, '/catalog/<string:name>')
@@ -50,6 +51,7 @@ api.add_resource(UserRegister, '/register')
 # ------------------------------------------------------------------------------
 # ---------> End of API Endpoints
 # ------------------------------------------------------------------------------
+
 
 if __name__ == '__main__':
     # Importing DB inside the if statement to prevent circular importing
