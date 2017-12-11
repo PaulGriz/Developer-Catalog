@@ -1,27 +1,30 @@
 from db import db
 
 
-class CategoryModel(db.Model):
-    __tablename__ = 'category'
+class ItemsModel(db.Model):
+    __tablename__ = 'items'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
+    description = db.Column(db.String(160))
 
-    items = db.relationship('ItemsModel', lazy='dynamic')
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship('CategoryModel')
 
-    def __init__(self, name):
+
+    def __init__(self, name, description, category_id):
         self.name = name
-
-    def json(self):
-        # lazy='dynamic' imporves the speed of creating a category
-        # However, it slows down the json get all items
-        return {'name': self.name, 'items': [item.json() for item in self.items.all()]}
+        self.description = description
+        self.category_id = category_id
 
     @classmethod
     def find_by_name(cls, name):
         # Translation: SELECT * FROM categories WHERE name=name LIMIT 1
         # Pulls single category by it's name from db
         return cls.query.filter_by(name=name).first()
+
+    def json(self):
+        return {'name': self.name, 'description': self.description}
 
     def save_to_db(self):
         # sqlite3 query translation = "INSERT INTO categories VALUES (?, ?)"

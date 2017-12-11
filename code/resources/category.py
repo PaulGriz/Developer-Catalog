@@ -3,15 +3,9 @@ from flask_jwt import jwt_required
 from models.category import CategoryModel
 
 
-class CategoryList(Resource):
-    def get(self):
-        # Could have also used a lambda
-        # --> Example: list(map(lambda x: x.json(), CategoryModel.query.all()))
-        return {'categories': [x.json() for x in CategoryModel.query.all()]}
-
 class Category(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('category_items',
+    parser.add_argument('items',
         type=str,
         required=True,
         help="This field cannot be left blank"
@@ -36,7 +30,7 @@ class Category(Resource):
             return {'message': "A category named '{}' already exists.".format(name)}, 400
 
         data = Category.parser.parse_args()
-        category = CategoryModel(name, data['category_items'])
+        category = CategoryModel(name, data['items'])
 
         try:
             category.save_to_db()
@@ -57,10 +51,10 @@ class Category(Resource):
 
         if category is None:
             # If category not found  --> then make a new category
-            category = CategoryModel(name, data['category_items'])
+            category = CategoryModel(name, data['items'])
         else:
             # If category was found --> then edit category
-            category.category_items = data['category_items']
+            category.category_items = data['items']
 
         # save_to_db from Class CategoryModel in file --> models / category.py
         category.save_to_db()
@@ -79,3 +73,10 @@ class Category(Resource):
             category.delete_from_db()
 
         return {'message': 'Category has been deleted'}
+
+
+class CategoryList(Resource):
+    def get(self):
+        # Could have also used a lambda
+        # --> Example: list(map(lambda x: x.json(), CategoryModel.query.all()))
+        return {'categories': [x.json() for x in CategoryModel.query.all()]}
