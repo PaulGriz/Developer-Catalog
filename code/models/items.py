@@ -17,14 +17,14 @@ class ItemsModel(db.Model):
         self.description = description
         self.category_id = category_id
 
+    def json(self):
+        return {'name': self.name, 'description': self.description}
+
     @classmethod
     def find_by_name(cls, name):
         # Translation: SELECT * FROM categories WHERE name=name LIMIT 1
         # Pulls single category by it's name from db
         return cls.query.filter_by(name=name).first()
-
-    def json(self):
-        return {'name': self.name, 'description': self.description}
 
     def save_to_db(self):
         # sqlite3 query translation = "INSERT INTO categories VALUES (?, ?)"

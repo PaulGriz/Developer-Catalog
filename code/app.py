@@ -30,8 +30,8 @@ jwt = JWT(app, authenicate, identity)
 api.add_resource(CategoryList, '/catalog')
 api.add_resource(Category, '/catalog/<string:name>')
 
-api.add_resource(Item, '/catalog/items')
-api.add_resource(ItemList, '/catalog/items/<string:name>')
+api.add_resource(ItemList, '/catalog/items')
+api.add_resource(Item, '/catalog/items/<string:name>')
 
 api.add_resource(UserRegister, '/register')
 

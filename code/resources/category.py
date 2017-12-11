@@ -4,12 +4,8 @@ from models.category import CategoryModel
 
 
 class Category(Resource):
-    
-
     def get(self, name):
-        # -------------------------------------------------------------------------------
         # get a single category
-        # -------------------------------------------------------------------------------
         category = CategoryModel.find_by_name(name)
         if category:
             # Return data in JSON is required by Parameters in CategoryModel
@@ -18,15 +14,11 @@ class Category(Resource):
 
 
     def post(self, name):
-        # -------------------------------------------------------------------------------
         # post a new category
-        # -------------------------------------------------------------------------------
         if CategoryModel.find_by_name(name):
             return {'message': "A category named '{}' already exists.".format(name)}, 400
 
-        data = Category.parser.parse_args()
-        category = CategoryModel(name, data['items'])
-
+        category = CategoryModel(name)
         try:
             category.save_to_db()
         except:
@@ -37,9 +29,7 @@ class Category(Resource):
 
 
     def delete(self, name):
-        # -------------------------------------------------------------------------------
         # DELETE---> a single category
-        # -------------------------------------------------------------------------------
         category = CategoryModel.find_by_name(name)
 
         if category:
