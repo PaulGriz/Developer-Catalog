@@ -2,6 +2,26 @@
 |                       Personal Development Log                               |
 --------------------------------------------------------------------------------
 
+-----------------------------
+| Digital Ocean PostgresSQL:
+-----------------------------
+
+|---> Configure a PostgreSQL Database for SQLAlchemy and Flask
+
+| sudo su into root
+| root@[system_name]:~$ sudo -i -u postgres
+| postgres@[system_name]:~$ createuser [name] -p
+| postgres@[system_name]:~$ createdb [name]
+| exit
+| exit
+| [name]@[system_name]:~$ sudo vi /etc/postgresql/9.5/main/pg_hba.conf
+|---> [Line 90]
+|---> Change [local all all peer]
+|--->To [local all all md5]
+
+
+--------------------------------------------------------------------------------
+
 ---------------------------
 | Heroku Publishing Tips:
 ---------------------------

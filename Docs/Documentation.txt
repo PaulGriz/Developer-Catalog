@@ -5,3 +5,32 @@ Logic Explained:
 [ Will write up documentation for developers using the api ]
 
 [ Will explain requirements / setup process ]
+
+
+--------------------------------------------------------------------------------
+|---> Configuration Files Created Log
+--------------------------------------------------------------------------------
+
+1.)
+|---> PostgreSQL Database
+|---> Nginx
+|--->|---> Made a Configuration File Named:
+|--->|---> /etc/nginx/sites-available/items-rest.conf
+
+--------------------------------------------------------------------------------
+|---> Linux Server Installations Log
+--------------------------------------------------------------------------------
+
+1.) Nginx
+2.) python-pip
+3.) python3-dev
+4.) libpq-dev
+5.) virtualenv
+|---> /var/www/html/items-rest
+|--->|---> [To Activate] source venv/bin/activate
+6.) Flask
+7.) Flask-RESTful
+8.) Flask-JWT
+9.) Flask-SQLAlchemy
+10.) uwsgi
+11.) psycopg2
