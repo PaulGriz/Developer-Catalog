@@ -6,20 +6,6 @@ Logic Explained:
 
 [ Will explain requirements / setup process ]
 
-
---------------------------------------------------------------------------------
-|---> Configuration Files Created Log
---------------------------------------------------------------------------------
-
-1.) PostgreSQL
-|---> Made a Configuration:
-|--->|---> /etc/postgresql/9.5/main/pg_hba.conf
-
-2.) Nginx
-|---> Made a Configuration:
-|--->|---> /etc/nginx/sites-available/items-rest.conf
-
-
 --------------------------------------------------------------------------------
 |---> Linux Server Installations Log
 --------------------------------------------------------------------------------
@@ -37,3 +23,20 @@ Logic Explained:
 9.) Flask-SQLAlchemy
 10.) uwsgi
 11.) psycopg2
+
+--------------------------------------------------------------------------------
+|---> Development Steps
+--------------------------------------------------------------------------------
+
+1.) Developed the server-side REST-API code using Python and Flask
+|---> Tested every new endpoint using Postman
+2.) Originally Hosted the REST-API with Heroku
+3.) Migrated the API to a Linux server hosted by Digital Ocean
+4.) Configured the server to run the API with Nginx and uWSGI
+|---> Tested every endpoint using Postman
+|---> This step required a lot of research and testing. However, I am very
+          happy with the end result.
+5.) Purchased Domain: devshare.club from NameCheap
+6.) Moved DNS to CloudFlare
+|---> Tested every endpoint using Postman
+7.) 
