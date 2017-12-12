@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 
 -----------------------------
-| Digital Ocean PostgresSQL:
+| Digital Ocean PostgreSQL:
 -----------------------------
 
 |---> Configure a PostgreSQL Database for SQLAlchemy and Flask

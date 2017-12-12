@@ -11,11 +11,14 @@ Logic Explained:
 |---> Configuration Files Created Log
 --------------------------------------------------------------------------------
 
-1.)
-|---> PostgreSQL Database
-|---> Nginx
-|--->|---> Made a Configuration File Named:
+1.) PostgreSQL
+|---> Made a Configuration:
+|--->|---> /etc/postgresql/9.5/main/pg_hba.conf
+
+2.) Nginx
+|---> Made a Configuration:
 |--->|---> /etc/nginx/sites-available/items-rest.conf
+
 
 --------------------------------------------------------------------------------
 |---> Linux Server Installations Log
