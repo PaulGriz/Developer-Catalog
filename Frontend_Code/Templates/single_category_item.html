@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block body %}
+<div class="card">
+    <img class="card-img-top" alt="Card image cap" src="/static/img/code.jpg" />
+    <div class="card-body">
+        <h4 class="card-title">{{item_name}}</h4>
+        <p class="card-text">{{item_description}}</p>
+    </div>
+    <div class="card-body">
+        <a href="/catalog" class="card-link">Back to Categories</a>
+        <a href="/" class="card-link">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
