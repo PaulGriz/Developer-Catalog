@@ -37,17 +37,17 @@ def post_new_category():
     if request.method == 'POST':
         new_category = request.form['name']
         ApiRequests.post_category(new_category)
-        return redirect(url_for('home_page'))
+        return redirect(url_for('catalog_page'))
     return render_template('post_new_category.html')
 
 
-@app.route('/catalog/<string:category_from_url>/', methods=['GET', 'DELETE'])
-def delete_category_page(category_from_url):
-    if request.method == 'DELETE':
-        category = request.form['name']
-        ApiRequests.post_category(new_category)
-        return redirect(url_for('home_page'))
-    return render_template('post_new_category.html')
+@app.route('/catalog/delete', methods=['GET', 'POST'])
+def delete_category_page():
+    if request.method == 'POST':
+        bye_category = request.form['name']
+        ApiRequests.delete_category(bye_category)
+        return redirect(url_for('catalog_page'))
+    return render_template('delete_category.html')
 
 
 #------------------------------------------------------------------------------------------------------------

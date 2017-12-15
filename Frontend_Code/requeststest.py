@@ -2,27 +2,20 @@ import requests
 import json
 
 
+def delete_category(bye_category):
+    url = "https://developer-catalog.herokuapp.com/catalog/{0}".format(bye_category)
+    payload = {'name': bye_category}
+    headers = {'content-type': 'application/json'}
+    r = requests.delete(url, data=json.dumps(payload), headers=headers)
+    return r
 
-def get_all_item_names():
-    r = requests.get("https://developer-catalog.herokuapp.com/catalog/items")
-    data = r.json()
-    items = data['items']
-    name = []
-    description = []
-    for item in items:
-        name.append(item['name'])
-        description.append(item['description'])
-    return name, description
 
-listname = get_all_item_names()
-name = listname[0]
-description = listname[1]
-print (name)
-print (description)
 
-"""
-url = "https://developer-catalog.herokuapp.com/catalog/items"
-payload = {'name': new_category}
-headers = {'content-type': 'application/json'}
-r = requests.post(url, data=json.dumps(payload), headers=headers)
-"""
+def delete_category_page():
+    bye_category = 'testcate3'
+    delete_category(bye_category)
+    return bye_category
+
+delete_category_page()
+
+
