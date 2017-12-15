@@ -1,9 +1,11 @@
 import requests
 from flask import Flask, render_template, request, redirect, url_for
-from flask import  jsonify, flash, Response
+from flask import jsonify, flash, Response
 from models.api_requests import ApiRequests
 
+
 app = Flask(__name__)
+app.secret_key = 'development key'
 
 
 @app.route('/')
@@ -32,6 +34,14 @@ def single_category_item_page(item_from_url):
     item_description = data['description']
     return render_template('single_category_item.html', item_name=item_name, item_description=item_description)
 
+
+@app.route('/catalog/new', methods=['GET', 'POST'])
+def post_new_category():
+    if request.method == 'POST':
+        new_category = request.form['name']
+        ApiRequests.post_category(new_category)
+        return redirect(url_for('home_page'))
+    return render_template('post_new_category.html')
 
 @app.route('/about')
 def about_page():

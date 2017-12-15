@@ -1,5 +1,5 @@
 import requests
-
+import json
 
 class ApiRequests():
 
@@ -26,3 +26,10 @@ class ApiRequests():
         r = requests.get("https://developer-catalog.herokuapp.com/catalog/items/{0}".format(item_from_url))
         data = r.json()
         return data
+
+    def post_category(new_category):
+        url = "https://developer-catalog.herokuapp.com/catalog/{0}".format(new_category)
+        payload = {'name': new_category}
+        headers = {'content-type': 'application/json'}
+        r = requests.post(url, data=json.dumps(payload), headers=headers)
+        return r
