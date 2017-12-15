@@ -13,6 +13,11 @@ def home_page():
     return render_template('home.html')
 
 
+#------------------------------------------------------------------------------------------------------------
+#-----------------------> Category Templates
+#------------------------------------------------------------------------------------------------------------
+
+
 @app.route('/catalog')
 def catalog_page():
     categories = ApiRequests.get_all_category_names()
@@ -27,14 +32,6 @@ def single_category_page(category_from_url):
     return render_template('single_category.html', category_name=category_name, category_items=category_items)
 
 
-@app.route('/catalog/items/<string:item_from_url>')
-def single_category_item_page(item_from_url):
-    data = ApiRequests.get_single_category_item(item_from_url)
-    item_name = data['name']
-    item_description = data['description']
-    return render_template('single_category_item.html', item_name=item_name, item_description=item_description)
-
-
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def post_new_category():
     if request.method == 'POST':
@@ -42,6 +39,37 @@ def post_new_category():
         ApiRequests.post_category(new_category)
         return redirect(url_for('home_page'))
     return render_template('post_new_category.html')
+
+
+@app.route('/catalog/<string:category_from_url>/', methods=['GET', 'DELETE'])
+def delete_category_page(category_from_url):
+    if request.method == 'DELETE':
+        category = request.form['name']
+        ApiRequests.post_category(new_category)
+        return redirect(url_for('home_page'))
+    return render_template('post_new_category.html')
+
+
+#------------------------------------------------------------------------------------------------------------
+#-----------------------> Item Templates
+#------------------------------------------------------------------------------------------------------------
+
+
+@app.route('/catalog/items')
+def all_items_page():
+    data = ApiRequests.get_all_item_names()
+    name = data[0]
+    description = data[1]
+    return render_template('all_items.html', name=name, description=description)
+
+
+@app.route('/catalog/items/<string:item_from_url>')
+def single_category_item_page(item_from_url):
+    data = ApiRequests.get_single_category_item(item_from_url)
+    item_name = data['name']
+    item_description = data['description']
+    return render_template('single_category_item.html', item_name=item_name, item_description=item_description)
+
 
 @app.route('/about')
 def about_page():
