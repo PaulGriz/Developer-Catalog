@@ -59,3 +59,4 @@ class ApiRequests():
             name.append(item['name'])
             description.append(item['description'])
         return name, description
+

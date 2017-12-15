@@ -63,7 +63,7 @@ def all_items_page():
     return render_template('all_items.html', name=name, description=description)
 
 
-@app.route('/catalog/items/<string:item_from_url>')
+@app.route('/catalog/items/<string:item_from_url>/')
 def single_category_item_page(item_from_url):
     data = ApiRequests.get_single_category_item(item_from_url)
     item_name = data['name']

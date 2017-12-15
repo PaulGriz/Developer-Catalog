@@ -18,4 +18,3 @@ def delete_category_page():
 
 delete_category_page()
 
-
