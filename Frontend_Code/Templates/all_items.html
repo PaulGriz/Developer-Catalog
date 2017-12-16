@@ -8,8 +8,8 @@
         <a href="/catalog/new">Post a New Item</a>
     </div>
     <ul class="list-group list-group-flush">
-        {% for name in name %}
-            <li class="list-group-item"><a href="/catalog/items/{{name}}/">{{name}}</a></li>         
+        {% for i in items %}
+            <li class="list-group-item"><a href="/catalog/{{i.category_id}}/{{i.name}}/">{{i.name}}</a></li>         
         {% endfor %}
     </ul>
     <div class="card-body">

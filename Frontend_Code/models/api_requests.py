@@ -47,16 +47,11 @@ class ApiRequests():
         r = requests.get("https://developer-catalog.herokuapp.com/catalog/items")
         data = r.json()
         items = data['items']
-        name = []
-        description = []
-        for item in items:
-            name.append(item['name'])
-            description.append(item['description'])
-        return name, description
+        return items
 
-    def get_single_category_item(item_from_url):
+    def get_single_category_item(category_id, item_from_url):
         r = requests.get(
-            "https://developer-catalog.herokuapp.com/catalog/items/{0}".format(item_from_url))
+            "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, item_from_url))
         data = r.json()
         return data
 

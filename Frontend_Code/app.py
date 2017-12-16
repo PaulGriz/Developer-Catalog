@@ -12,7 +12,7 @@ app.secret_key = 'development key'
 def home_page():
     return render_template('home.html')
 
-
+ 
 #------------------------------------------------------------------------------------------------------------
 #-----------------------> Category Templates
 #------------------------------------------------------------------------------------------------------------
@@ -57,15 +57,22 @@ def delete_category_page():
 
 @app.route('/catalog/items')
 def all_items_page():
-    data = ApiRequests.get_all_item_names()
-    name = data[0]
-    description = data[1]
-    return render_template('all_items.html', name=name, description=description)
+    r = requests.get("https://developer-catalog.herokuapp.com/catalog/items")
+    data = r.json()
+    items = data['items']
+    name = []
+    description = []
+    category_id = []
+    for item in items:
+        name.append(item['name'])
+        description.append(item['description'])
+        category_id.append(item['category_id'])
+    return render_template('all_items.html', items=items, name=name, description=description, category_id=category_id)
 
 
-@app.route('/catalog/items/<string:item_from_url>/')
-def single_category_item_page(item_from_url):
-    data = ApiRequests.get_single_category_item(item_from_url)
+@app.route('/catalog/<int:category_id>/<string:item_from_url>/')
+def single_category_item_page(category_id, item_from_url):
+    data = ApiRequests.get_single_category_item(category_id, item_from_url)
     item_name = data['name']
     item_description = data['description']
     return render_template('single_category_item.html', item_name=item_name, item_description=item_description)
