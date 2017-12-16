@@ -16,13 +16,13 @@ class Item(Resource):
         help="Every item needs a category_id."
     )
 
-    def get(self, name):
+    def get(self, name, category_id):
         item = ItemsModel.find_by_name(name)
         if item:
             return item.json()
         return {'message': 'Item not found'}, 404
 
-    def post(self, name):
+    def post(self, name, category_id):
         if ItemsModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400
 
@@ -36,7 +36,7 @@ class Item(Resource):
 
         return item.json(), 201
 
-    def put(self, name):
+    def put(self, name, category_id):
         data = Item.parser.parse_args()
         item = ItemsModel.find_by_name(name)
 
@@ -48,7 +48,7 @@ class Item(Resource):
         item.save_to_db()
         return item.json()
 
-    def delete(self, name):
+    def delete(self, name, category_id):
         item = ItemsModel.find_by_name(name)
 
         if item:

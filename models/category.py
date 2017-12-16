@@ -15,7 +15,7 @@ class CategoryModel(db.Model):
     def json(self):
         # lazy='dynamic' imporves the speed of creating a category
         # However, it slows down the json get all items method
-        return {'name': self.name, 'items': [item.json() for item in self.items.all()]}
+        return {'id': self.id, 'name': self.name, 'items': [item.json() for item in self.items.all()]}
 
     @classmethod
     def find_by_name(cls, name):
