@@ -43,13 +43,10 @@ jwt = JWT(app, authenicate, identity)
 api.add_resource(CategoryList, '/catalog')
 api.add_resource(Category, '/catalog/<string:name>')
 #---> Items
-"""
 api.add_resource(ItemList, '/catalog/items')
-api.add_resource(ItemList, '/catalog/<int:category_id>/items')
 api.add_resource(Item, '/catalog/<int:category_id>/<string:name>')
 #---> Authentication
 api.add_resource(UserRegister, '/register')
-"""
 
 # ------------------------------------------------------------------------------
 # ---------> End of API Endpoints
