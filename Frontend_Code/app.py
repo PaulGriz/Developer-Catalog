@@ -98,6 +98,17 @@ def delete_item_page():
     return render_template('delete_item.html')
 
 
+@app.route('/catalog/items/edit', methods=['GET', 'POST'])
+def edit_item_page():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        category_id = request.form['category_id']
+        ApiRequests.edit_item(name, description, category_id)
+        return redirect(url_for('all_items_page'))
+    return render_template('edit_item.html')
+
+
 @app.route('/about')
 def about_page():
     return render_template('about.html')

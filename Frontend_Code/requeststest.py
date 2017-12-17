@@ -2,32 +2,41 @@ import requests
 import json
 
 
-def delete_item(name, category_id):
+
+def edit_item(name, description, category_id):
     url = "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, name)
-    payload = {'name': name}
+    payload = {'name': name, 'description': description, 'category_id': category_id}
     headers = {'content-type': 'application/json'}
-    r = requests.delete(url, data=json.dumps(payload), headers=headers)
-    return r
-
-name = "Baseball"
-category_id = 22
-delete_item(name, category_id)
+    edited = requests.put(url, data=json.dumps(payload), headers=headers)
+    return edited
 
 
-
+name = 'iMac'
+category_id = 1
+description = 'Second Tests Edit'
+edit_item(name, description, category_id)
 """
-def delete_category_page():
-    if request.method == 'POST':
-        bye_category = request.form['name']
-        ApiRequests.delete_category(bye_category)
-        return redirect(url_for('catalog_page'))
-    return render_template('delete_category.html')
-
-
-def delete_category(bye_category):
-    url = "https://developer-catalog.herokuapp.com/catalog/{0}".format(bye_category)
-    payload = {'name': bye_category}
+def get_item_data(name, category_id):
+    url = "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, name)
+    payload = {'name': name, 'category_id': category_id}
     headers = {'content-type': 'application/json'}
-    r = requests.delete(url, data=json.dumps(payload), headers=headers)
+    r = requests.get(url, data=json.dumps(payload), headers=headers)
     return r
+
+def edit_item_page(name, category_id):
+    name = name
+    category_id = category_id
+    r = get_item_data(name, category_id)
+    data = r.json()
+    new_name = 'iMacEDITED'
+    new_description = "testEDITED"
+    url = "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, name)
+    payload = {'name': name, 'category_id': category_id}
+    headers = {'content-type': 'application/json'}
+    edited = requests.put(url, data=json.dumps(payload), headers=headers)
+    return edited
+
+
+
+edit_item_page('iMac', 1)
 """

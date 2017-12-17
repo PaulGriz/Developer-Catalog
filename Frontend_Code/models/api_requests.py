@@ -4,7 +4,9 @@ import json
 
 class ApiRequests():
 
-     #-------> Categories
+    #------------------------------------------------------------------------------------------------------
+    #-----------------------> Category Requests
+    #------------------------------------------------------------------------------------------------------
 
     def get_all_category_names():
         r = requests.get("https://developer-catalog.herokuapp.com/catalog")
@@ -41,7 +43,9 @@ class ApiRequests():
         r = requests.delete(url, data=json.dumps(payload), headers=headers)
         return r
 
-    #-------> Items
+    #------------------------------------------------------------------------------------------------------
+    #-----------------------> Item Requests
+    #------------------------------------------------------------------------------------------------------
 
     def get_all_item_names():
         r = requests.get("https://developer-catalog.herokuapp.com/catalog/items")
@@ -69,3 +73,9 @@ class ApiRequests():
         r = requests.delete(url, data=json.dumps(payload), headers=headers)
         return r
 
+    def edit_item(name, description, category_id):
+        url = "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, name)
+        payload = {'name': name, 'description': description, 'category_id': category_id}
+        headers = {'content-type': 'application/json'}
+        edited = requests.put(url, data=json.dumps(payload), headers=headers)
+        return edited
