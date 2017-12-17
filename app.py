@@ -2,12 +2,10 @@ import os
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
-
 from security import authenicate, identity
 from resources.user import UserRegister
 from resources.category import Category, CategoryList
 from resources.items import Item, ItemList
-
 
 # ------------------------------------------------------------------------------
 # ---------> Flask App Setup and Configurations
