@@ -1,14 +1,21 @@
 {% extends 'index.html' %}
 {% block body %}
 <div class="card">
+
     <img class="card-img-top" alt="Card image cap" src="/static/img/code.jpg" />
     <div class="card-body">
         <h4 class="card-title">{{item_name}}</h4>
         <p class="card-text">{{item_description}}</p>
+        <a href='{{url_for('delete_item_page')}}'>Delete this Item</a>
+        <br>
+        <a href='{{url_for('edit_item_page') }}'>Edit this Item</a>
+        
     </div>
     <div class="card-body">
+
         <a href="/catalog/items" class="card-link">Back to Items</a>
         <a href="/" class="card-link">Back to Home</a>
+
     </div>
 </div>
 {% endblock %}
