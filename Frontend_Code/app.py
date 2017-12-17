@@ -33,7 +33,7 @@ def single_category_page(category_from_url):
 
 
 @app.route('/catalog/new', methods=['GET', 'POST'])
-def post_new_category():
+def post_new_category_page():
     if request.method == 'POST':
         new_category = request.form['name']
         ApiRequests.post_category(new_category)
@@ -71,11 +71,31 @@ def all_items_page():
 
 
 @app.route('/catalog/<int:category_id>/<string:item_from_url>/')
-def single_category_item_page(category_id, item_from_url):
+def get_single_item_page(category_id, item_from_url):
     data = ApiRequests.get_single_category_item(category_id, item_from_url)
     item_name = data['name']
     item_description = data['description']
     return render_template('single_category_item.html', item_name=item_name, item_description=item_description)
+
+
+@app.route('/catalog/items/new', methods=['GET', 'POST'])
+def post_new_item_page():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        category_id = request.form['category_id']
+        ApiRequests.post_new_item(name, description, category_id)
+        return redirect(url_for('all_items_page'))
+    return render_template('post_new_item.html')
+
+@app.route('/catalog/items/delete', methods=['GET', 'POST'])
+def delete_item_page():
+    if request.method == 'POST':
+        name = request.form['name']
+        category_id = request.form['category_id']
+        ApiRequests.delete_item(name, category_id)
+        return redirect(url_for('all_items_page'))
+    return render_template('delete_item.html')
 
 
 @app.route('/about')

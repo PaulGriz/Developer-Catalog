@@ -55,3 +55,17 @@ class ApiRequests():
         data = r.json()
         return data
 
+    def post_new_item(name, description, category_id):
+        url = "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, name)
+        payload = {'name': name, 'description': description, 'category_id': category_id}
+        headers = {'content-type': 'application/json'}
+        r = requests.post(url, data=json.dumps(payload), headers=headers)
+        return r
+
+    def delete_item(name, category_id):
+        url = "https://developer-catalog.herokuapp.com/catalog/{0}/{1}".format(category_id, name)
+        payload = {'name': name}
+        headers = {'content-type': 'application/json'}
+        r = requests.delete(url, data=json.dumps(payload), headers=headers)
+        return r
+
