@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from models.items import ItemsModel
+import datetime
 
 class Item(Resource):
     parser = reqparse.RequestParser()
@@ -10,6 +11,11 @@ class Item(Resource):
         help="Every Item needs a description"
     )
     parser.add_argument('category_id',
+        type=int,
+        required=True,
+        help="Every item needs a category_id."
+    )
+    parser.add_argument('date_posted',
         type=int,
         required=True,
         help="Every item needs a category_id."
