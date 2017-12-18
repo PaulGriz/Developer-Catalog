@@ -9,7 +9,7 @@ class ItemsModel(db.Model):
     description = db.Column(db.String(160))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('CategoryModel')
-    date_posted = db.Column(db.DateTime,  default=datetime.datetime.utcnow)
+    date_posted = db.Column(db.DateTime(), default=datetime.utcnow)
 
 
     def __init__(self, name, description, category_id):
