@@ -12,7 +12,7 @@ app.secret_key = 'development key'
 def home_page():
     return render_template('home.html')
 
- 
+
 #------------------------------------------------------------------------------------------------------------
 #-----------------------> Category Templates
 #------------------------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ def get_single_item_page(category_id, item_from_url):
     data = ApiRequests.get_single_category_item(category_id, item_from_url)
     item_name = data['name']
     item_description = data['description']
-    return render_template('single_category_item.html', item_name=item_name, item_description=item_description)
+    return render_template('single_category_item.html', item_name=item_name, item_description=item_description, category_id=category_id)
 
 
 @app.route('/catalog/items/new', methods=['GET', 'POST'])

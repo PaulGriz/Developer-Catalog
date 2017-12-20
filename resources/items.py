@@ -15,11 +15,6 @@ class Item(Resource):
         required=True,
         help="Every item needs a category_id."
     )
-    parser.add_argument('date_posted',
-        type=int,
-        required=True,
-        help="Every item needs a category_id."
-    )
 
     def get(self, name, category_id):
         item = ItemsModel.find_by_name(name)
