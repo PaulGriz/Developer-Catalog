@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+{% block content %}
+
+<h2>Edit {{item.name}}</h2>
+
+<form class="" action="#" method="post">
+    <div class="form-group">
+        <label for="name">Item Name</label>
+        <input class="form-control" type="text" name="name" value="" placeholder="{{item.name}}">
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" name="description" rows="8" placeholder="{{item.description}}"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="category">Category</label>
+        <select value="{{item.id}}" class="form-control" name="category">
+            {% for e in categories %}
+                {% if item.category_id == e.id %}
+                    <option selected="selected" value="{{e.id}}">{{e.name}}</option>
+                {% else %}
+                    <option value="{{e.id}}">{{e.name}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <button class="form-control" type="submit" name="editItem">Submit</button>
+</form>
+
+{% endblock %}
