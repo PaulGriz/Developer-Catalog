@@ -16,6 +16,13 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+"""
+class Helpers():
+    
+    def create_state_token():
+        state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+        return state
+"""  
 
 class ApiEndpoints():
 
@@ -27,3 +34,17 @@ class ApiEndpoints():
             r = [item.serialize for item in items if item.category_id == i['id']]
             i['items'] = r
         return jsonify(catalog)
+
+
+class CategoryFunctions():
+
+    def get_all_categories():
+        categories = session.query(Category).all()
+        return categories
+
+
+class ItemFunctions():
+
+    def get_5_newest_items():
+        items = session.query(Item).order_by(Item.id.desc()).limit(5)
+        return items

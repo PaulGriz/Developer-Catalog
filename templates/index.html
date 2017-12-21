@@ -1,27 +1,141 @@
-{% extends "main.html" %}
-{% block content %}
-<div class="row">
-    <div class="col-sm-6">
-        <h2>Categories</h2>
-        <ul class="list-group">
-            {% for e in categories %}
-            <li class="list-group-item">
-                <span class="badge">{{itemCounter(e)}}</span>
-                <a href="{{url_for('showCatalogItems', catId=e.name)}}">{{e.name}}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="col-sm-6">
-        <h2>Latest Items</h2>
+<!DOCTYPE html>
+<html lang="en">
 
-        <div class="items">
-            <ul class="list-group">
-                {% for e in latestItems %}
-                <li class="list-group-item"><a href="{{url_for('showDescription', itemId=e.name, catId=changer(e.category_id))}}">{{e.name}} ({{getLatestCatFromId(e.category_id)}})</li>
-                {% endfor %}
-            </ul>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Paul Griz">
+
+    <title>DevShare</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom fonts -->
+    <link href="{{ url_for('static', filename='vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+        rel='stylesheet' type='text/css'>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+
+    <!-- Custom stylesheets  -->
+    <link href="{{ url_for('static', filename='css/clean-blog.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/footer_style.css') }}" rel="stylesheet" >
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-default fixed-top" id="mainNav">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{url_for('home_page')}}">
+                    <strong>DevShare</strong>
+                </a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    {% if permission == True %}
+                    <form class="navbar-form navbar-right" action="{{ url_for('post_new_category') }}">
+                        <div class="form-group">
+                            <input class="form-control" type="submit" value="Add Category">
+                        </div>
+                    </form>
+                    <form class="navbar-form navbar-right" action="{{ url_for('addItem') }}">
+                        <div class="form-group">
+                            <input class="form-control" type="submit" value="Add Item">
+                        </div>
+                    </form>
+                    <form class="navbar-form navbar-right" action="{{url_for('gdisconnect')}}">
+                        <div class="form-group">
+                            <input class="form-control" type="submit" value="Logout">
+                        </div>
+                    </form>
+                    {% else %}
+                    <form class="navbar-form navbar-right" action="{{url_for('login_page')}}">
+                        <div class="form-group">
+                            <input class="form-control" type="submit" value="Login">
+                        </div>
+                    </form>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <!-- Page Header -->
+    
+    <header class="masthead" style="background-image: url('/static/img/Header_Empty.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+
+    <div class="container">
+        <div class='flash'>
+            {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+            <div class="alert alert-{{category}} alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+            </div>
+            {% endfor %} {% endif %} {% endwith %}
+        </div>
+        {% block content %} {% endblock %}
     </div>
-</div>
-{% endblock %}
+
+    <!-- Footer -->
+
+    <footer>
+        <div class="footer_content">
+            <div class="icon_group">
+                <a class="icon twitter" href="https://twitter.com/PJBlocks">
+                    <i class="fa fa-twitter fa-2x" aria-hidden="true"></i>
+                    <div class="background_circle"></div>
+                </a>
+                <a class="icon pinterest" href="https://github.com/PgTower">
+                    <i class="fa fa-github fa-2x" aria-hidden="true"></i>
+                    <div class="background_circle"></div>
+                </a>
+            </div>
+        </div> 
+        <p class="copyright text-muted">Copyright &copy; Paul Griz 2017</p>
+
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js'></script>
+
+    <!-- Custom scripts -->
+    <script src="{{ url_for('static', filename='js/clean-blog.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/footer_icons.js') }}"></script>
+
+</body>
+
+</html>

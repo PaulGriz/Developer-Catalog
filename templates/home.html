@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-6">
+        <h2>Categories</h2>
+        <ul class="list-group">
+            {% for e in categories %}
+            <li class="list-group-item">
+                <span class="badge">{{count_items(e)}}</span>
+                <a href="{{url_for('showCatalogItems', category_id=e.name)}}">{{e.name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-sm-6">
+        <h2>Latest Items</h2>
+
+        <div class="items">
+            <ul class="list-group">
+                {% for e in newest_items %}
+                <li class="list-group-item"><a href="{{url_for('showDescription', itemId=e.name, category_id=get_1_category_by_id(e.category_id))}}">{{e.name}} ({{get_1_category_by_id(e.category_id)}})</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

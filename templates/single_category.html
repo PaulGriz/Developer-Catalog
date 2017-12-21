@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "index.html" %}
 {% block content %}
 
 {% if categoryloaded == True %}
@@ -11,7 +11,7 @@
             <em>This category doesn't have a description.</em>
         {% endif %}
 
-        {% if loginCheck == True %}
+        {% if permission == True %}
 
             {% if deleteQuestion == False %}
                 <form class="form-inline" action="{{url_for('delete_category_page', category_name=category.name)}}" method="post">

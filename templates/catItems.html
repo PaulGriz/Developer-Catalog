@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "index.html" %}
 {% block content %}
 
 <div class="row">
@@ -11,8 +11,8 @@
             {% else %}
             <li class="list-group-item">
             {% endif %}
-                <span class="badge">{{itemCounter(e)}}</span>
-                <a href="{{url_for('showCatalogItems', catId=e.name)}}">{{e.name}}</a>
+                <span class="badge">{{count_items(e)}}</span>
+                <a href="{{url_for('showCatalogItems', category_id=e.name)}}">{{e.name}}</a>
             </li>
             {% endfor %}
         </ul>
@@ -33,7 +33,7 @@
             <ul class="list-group">
                 {% for e in selectedItems %}
                     <li class="list-group-item">
-                        <a href="{{url_for('showDescription', itemId=e.name, catId=selectedCat.name)}}">{{e.name}}</a>
+                        <a href="{{url_for('showDescription', itemId=e.name, category_id=selectedCat.name)}}">{{e.name}}</a>
                     </li>
                 {% endfor %}
             </ul>
