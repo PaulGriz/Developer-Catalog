@@ -1,13 +1,11 @@
 import json
 import random
-import os
 import string
-import time
 
 import httplib2
 import requests
 from flask import session as login_session
-from flask import (Flask, flash, jsonify, make_response, redirect,
+from flask import (Flask, flash, make_response, redirect,
                    render_template, request, url_for)
 from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
 from sqlalchemy import create_engine
@@ -26,11 +24,12 @@ CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 APPLICATION_NAME = "DevShare"
 
-state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                for x in range(32))
 
 
 #--------------------------------------------------------------#
-#---------------->         Home Page          <----------------#
+#--------------------->    Home Page    <----------------------#
 #--------------------------------------------------------------#
 # The permission object is True only when a user is logged in  #
 # Permission is used throughout the app for CRUD operations    #
@@ -49,14 +48,12 @@ def home_page():
 
     print(state)
     return render_template('home.html', categories=categories, newest_items=newest_items,
-                           get_single_category=get_single_category,
-                           permission=permission,
-                           session_user=session_user,
-                           count_items=count_items)
+                           get_single_category=get_single_category, permission=permission,
+                           session_user=session_user, count_items=count_items)
 
 
 #--------------------------------------------------------#
-#-------------->      Login Page          <--------------#
+#----------------->    Login Page    <-------------------#
 #--------------------------------------------------------#
 # Here, the state token is loaded into the user session  #
 # login_session will be used for the Google OAth API     #
@@ -75,7 +72,7 @@ def login_page():
 #----------------------------------------------------------------------------#
 
 #--------------------------------------------------------------#
-#------------     Selected Category Items Page     ------------#
+#-------------->  Selected Category Items Page  <--------------#
 #--------------------------------------------------------------#
 # When the user selects a category, all the items are listed   #
 # Items are listed by name in alphabetical order               #
@@ -90,8 +87,10 @@ def get_category_items_page(category_id):
 
     permission = True
     categories = session.query(Category).all()
-    selected_category = session.query(Category).filter_by(name=category_id).one()
-    selected_category_items = session.query(Item).filter_by(category_id=selected_category.id).all()
+    selected_category = session.query(
+        Category).filter_by(name=category_id).one()
+    selected_category_items = session.query(Item).filter_by(
+        category_id=selected_category.id).all()
     number_of_items = count_items(selected_category)
     print(number_of_items)
     return render_template('get_category_items.html',
@@ -101,7 +100,7 @@ def get_category_items_page(category_id):
 
 
 #----------------------------------------------------------#
-#----------->     Post New Category Page       <-----------#
+#------------->   Post New Category Page   <---------------#
 #----------------------------------------------------------#
 # This page allows users to post new categories            #
 # Only signed in users have the permission to post content #
@@ -140,7 +139,8 @@ def post_new_category_page():
         # if this is not a POST request and the user is logged in:
         permission = True
         categories = session.query(Category).all()
-        return render_template('post_category.html', permission=permission, categories=categories, session_user=session_user)
+        return render_template('post_category.html', permission=permission, categories=categories,
+                               session_user=session_user)
 
     flash("You have to loggin before posting content.", "danger")
     return redirect(url_for('home_page'))
@@ -195,7 +195,7 @@ def delete_category_page(category_name):
 #----------------------------------------------------------------------------#
 
 #----------------------------------------------------------#
-#-----------         Selected Item Page         -----------#
+#--------------->    Selected Item Page    <---------------#
 #----------------------------------------------------------#
 # Displays the title and description of selected item      #
 # If user is logged in, CRUD options are available under   #
@@ -210,20 +210,20 @@ def get_item_page(category_id, item_id):
         permission = True
     else:
         permission = False
-    
+
     item = session.query(Item).filter_by(name=item_id).one()
     # If used to ensure query returned an item and flashes
-    #   an error if no item was found. 
+    #   an error if no item was found.
     if item is None:
         flash("Error finding item", "danger")
         return redirect(url_for('home_page'))
 
     return render_template('single_item.html', item=item,  permission=permission,
-                        session_user=session_user, deleteQuestion=False)
+                           session_user=session_user, deleteQuestion=False)
 
 
 #--------------------------------------------------------------#
-#------------>         Post New Item Page         <------------#
+#------------------>   Post New Item Page   <------------------#
 #--------------------------------------------------------------#
 #--> If User is not signed in:                                 #
 #------> 1.) Message is flashed warning them to sign in        #
@@ -262,25 +262,27 @@ def post_new_item_page():
             new_item = createItem(category, name, description, user_id)
 
             if new_item is True:
-                owning_category = session.query(Category).filter_by(id=category).one()
-                flash("Added {0} to {1} category.".format(name, owning_category.name), "success")
+                owning_category = session.query(
+                    Category).filter_by(id=category).one()
+                flash("Added {0} to {1} category.".format(
+                    name, owning_category.name), "success")
                 return redirect(url_for('home_page'))
 
             flash("Item was not created. You must include a name!",
-                    "danger")
+                  "danger")
             return redirect(url_for('home_page'))
-        
+
         permission = True
         categories = session.query(Category).all()
         return render_template('post_new_item.html', permission=permission, categories=categories,
-                                session_user=session_user)
+                               session_user=session_user)
 
     flash("You have to be logged in to add an item!", "danger")
     return redirect(url_for('home_page'))
 
 
 #--------------------------------------------------------------#
-#------------->        Delete Item Page          <-------------#
+#------------------>   Delete Item Page     <------------------#
 #--------------------------------------------------------------#
 #--> If User is not signed in:                                 #
 #------> 1.) Message is flashed warning them to sign in        #
@@ -310,16 +312,17 @@ def delete_item_page(item_id):
 
             if request.form['delete'] == 'delete_menu':
                 return render_template('single_item.html', item=item,
-                                        permission=permission, session_user=session_user,
-                                        deleteQuestion=True, itemCheck=True)
+                                       permission=permission, session_user=session_user,
+                                       deleteQuestion=True, itemCheck=True)
 
             if request.form['delete'] == 'no':
                 return render_template('single_item.html', item=item,
-                                        permission=permission, session_user=session_user,
-                                        deleteQuestion=False, itemCheck=True)
+                                       permission=permission, session_user=session_user,
+                                       deleteQuestion=False, itemCheck=True)
 
             if request.form['delete'] == 'yes':
-                selected_item = session.query(Item).filter_by(name=item_id).one()
+                selected_item = session.query(
+                    Item).filter_by(name=item_id).one()
                 delete_item(selected_item.id)
                 flash("{0} was deleted".format(item.name), "success")
                 return redirect(url_for('home_page'))
@@ -329,7 +332,7 @@ def delete_item_page(item_id):
 
 
 #--------------------------------------------------------------#
-#------------->         Edit Item Page           <-------------#
+#------------------->   Edit Item Page   <---------------------#
 #--------------------------------------------------------------#
 #--> If User is not signed in:                                 #
 #------> 1.) Message is flashed warning them to sign in        #
@@ -382,8 +385,8 @@ def edit_item_page(item_id):
         categories = session.query(Category).all()
         item = session.query(Item).filter_by(name=item_id).one()
         return render_template('edit_item.html', permission=permission,
-                                session_user=session_user, categories=categories,
-                                item_id=item_id, item=item)
+                               session_user=session_user, categories=categories,
+                               item_id=item_id, item=item)
 
     flash("Only logged in users can edit items", "danger")
     return redirect(url_for('home_page'))
@@ -395,7 +398,7 @@ def edit_item_page(item_id):
 
 
 #--------------------------------------------------------------#
-#------------->     Google OAuth Connection      <-------------#
+#---------------->  Google OAuth Connection  <-----------------#
 #--------------------------------------------------------------#
 #----> CREDIT: This function is heavily modeled after the code #
 #------------> in the Udacity lessons by by Lorenzo Brown      #
@@ -422,8 +425,7 @@ def gconnect():
         return response
 
     access_token = credentials.access_token
-    url = (
-        "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}".format(access_token))
+    url = ("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}".format(access_token))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
 
@@ -478,7 +480,7 @@ def gconnect():
     login_session['user_id'] = user_id
 
     output = ''
-    output += '<h1>Welcome,<br>'
+    output += '<h1>Welcome, '
     output += login_session['username']
     output += '!</h1>'
     output += '<img src="'
@@ -493,7 +495,7 @@ def gconnect():
 
 
 #--------------------------------------------------------------#
-#------------->     Google OAuth Disconnect      <-------------#
+#---------------->  Google OAuth Disconnect  <-----------------#
 #--------------------------------------------------------------#
 #----> CREDIT: This function is heavily modeled after the code #
 #------------> in the Udacity lessons by by Lorenzo Brown      #
@@ -528,7 +530,7 @@ def gdisconnect():
 
 
 #--------------------------------------------------------------#
-#------------->      JSON Endpoint for APIs      <-------------#
+#----------------->  JSON Endpoint for APIs  <-----------------#
 #--------------------------------------------------------------#
 # This endpoint returns all database entries into JSON format  #
 # tHE JSON is printed out is stranded JSON form for API use    #

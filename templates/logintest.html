@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//apis.google.com/js/platform.js?onload=start"></script>
-    <link href="{{ url_for('static', filename='css/loginpagestyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 
 </head>
 
@@ -19,30 +19,28 @@
 
     <!------------ Thanks Daniel Almeida for the reference  ----------->
     <!-- https://dribbble.com/shots/4027518-Login-screen-interaction -->
-    <!-- Credit to Jose Rossario for the Login Page Layout -->
 
     <div class="login-wrapper">
         <div class="login-left">
-            <img src="{{ url_for('static', filename='img/code.jpg') }}">
-            <div class="h1">Login to DevShare</div>
+            <img src="http://res.cloudinary.com/dzqowkhxu/image/upload/v1513679279/bg-login_bxxfkf.png">
+            <div class="h1">Enter the Nebula</div>
         </div>
         <div class="login-right">
-            <div class="h2"><strong> Sign In with Google </strong></div>
-            <br>
+            <div class="h2">Google Sign In</div>
             <div id="signInButton" class="col-sm-4">
                 <span class="g-signin" data-scope="openid email" data-clientid="173875917603-d9pnthbohkars23b0dlep2vns6n8hk9a.apps.googleusercontent.com"
                     data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
                     data-approvalprompt="force">
                 </span>
             </div>
-            <div id="result" class="login-result"></div>
 
+            <div id="result" class="col-sm-4"></div>
         </div>
     </div>
 
 
 
-    <script src="{{ url_for('static', filename='js/login_page.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>
         function signInCallback(authResult) {
             if (authResult['code']) {
@@ -55,7 +53,7 @@
                     contentType: 'application/octet-stream; charset=utf-8',
                     success: function (result) {
                         if (result) {
-                            $('#result').html('Login Successful!</br>' + result + '<br>')
+                            $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
                             setTimeout(function () {
                                 window.location.href = "/";
                             }, 3000);
