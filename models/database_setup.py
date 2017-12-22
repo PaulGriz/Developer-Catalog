@@ -24,7 +24,7 @@ class Category(Base):
     def serialize(self):
         return {'name': self.name,
                 'id': self.id}
-                
+
 
 class Item(Base):
     __tablename__ = 'item'
@@ -41,6 +41,7 @@ class Item(Base):
         return {'name': self.name,
                 'id': self.id,
                 'description': self.description}
+
 
 engine = create_engine('sqlite:///devshareDB.db')
 Base.metadata.create_all(engine)

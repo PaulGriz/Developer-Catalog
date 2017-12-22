@@ -9,8 +9,9 @@ Developer-Catalog
 	4.) CD back to the main project file where "app.py" is located
 	5.) Once in the "app.py" directory, type in command: "python app.py"
 			[Note] This project was develop and tested with Python 3
-	6.) Initially no categories or items will be found
-	7.) So, you must sign in and post content to view it on the home page
+    6.) Open localhost:5000 in a browser to view the site
+	7.) Initially, no categories or items will be found on the home page
+	8.) So, you must sign in and post content to view it on the home page
 
 
 ## Requirements:
