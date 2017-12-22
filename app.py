@@ -28,13 +28,13 @@ state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in range(32))
 
 
-#--------------------------------------------------------------#
-#--------------------->    Home Page    <----------------------#
-#--------------------------------------------------------------#
-# The permission object is True only when a user is logged in  #
-# Permission is used throughout the app for CRUD operations    #
-# A state token is given to all users when signed in           #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# --------------------->    Home Page    <---------------------- #
+# -------------------------------------------------------------- #
+# The permission object is True only when a user is logged in    #
+# Permission is used throughout the app for CRUD operations      #
+# A state token is given to all users when signed in             #
+# -------------------------------------------------------------- #
 
 
 @app.route('/')
@@ -46,18 +46,20 @@ def home_page():
     categories = get_all_categories()
     newest_items = get_5_newest_items()
 
-    print(state)
-    return render_template('home.html', categories=categories, newest_items=newest_items,
-                           get_single_category=get_single_category, permission=permission,
-                           session_user=session_user, count_items=count_items)
+    return render_template('home.html', categories=categories,
+                           newest_items=newest_items,
+                           get_single_category=get_single_category,
+                           permission=permission,
+                           session_user=session_user,
+                           count_items=count_items)
 
 
-#--------------------------------------------------------#
-#----------------->    Login Page    <-------------------#
-#--------------------------------------------------------#
-# Here, the state token is loaded into the user session  #
-# login_session will be used for the Google OAth API     #
-#--------------------------------------------------------#
+# -------------------------------------------------------- #
+# ----------------->    Login Page    <------------------- #
+# -------------------------------------------------------- #
+# Here, the state token is loaded into the user session    #
+# login_session will be used for the Google OAth API       #
+# -------------------------------------------------------- #
 
 
 @app.route('/login/')
@@ -67,17 +69,17 @@ def login_page():
     return render_template('login.html', STATE=state)
 
 
-#----------------------------------------------------------------------------#
-#--------------------------->   Category Pages   <---------------------------#
-#----------------------------------------------------------------------------#
+# ------------------------------------------------------------------- #
+# ---------------------->   Category Pages   <----------------------- #
+# ------------------------------------------------------------------- #
 
-#--------------------------------------------------------------#
-#-------------->  Selected Category Items Page  <--------------#
-#--------------------------------------------------------------#
-# When the user selects a category, all the items are listed   #
-# Items are listed by name in alphabetical order               #
-# Below the items is the option to delete the category         #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# -------------->  Selected Category Items Page  <-------------- #
+# -------------------------------------------------------------- #
+# When the user selects a category, all the items are listed     #
+# Items are listed by name in alphabetical order                 #
+# Below the items is the option to delete the category           #
+# -------------------------------------------------------------- #
 
 
 @app.route('/catalog/<string:category_id>/items')
@@ -92,24 +94,26 @@ def get_category_items_page(category_id):
     selected_category_items = session.query(Item).filter_by(
         category_id=selected_category.id).all()
     number_of_items = count_items(selected_category)
-    print(number_of_items)
+
     return render_template('get_category_items.html',
-                           categories=categories, selected_category_items=selected_category_items,
-                           selected_category=selected_category, number_of_items=number_of_items,
+                           categories=categories,
+                           selected_category_items=selected_category_items,
+                           selected_category=selected_category,
+                           number_of_items=number_of_items,
                            permission=permission)
 
 
-#----------------------------------------------------------#
-#------------->   Post New Category Page   <---------------#
-#----------------------------------------------------------#
-# This page allows users to post new categories            #
-# Only signed in users have the permission to post content #
-#--> If a non-user navigates to this link:                 #
-#------> 1.) A message is flashed warning the user         #
-#------> 2.) User is redirected to the Home Page           #
-#              <---------------------------->              #
-# On successful login, the user is sent back to home page  #
-#----------------------------------------------------------#
+# ---------------------------------------------------------- #
+# ------------->   Post New Category Page   <--------------- #
+# ---------------------------------------------------------- #
+# This page allows users to post new categories              #
+# Only signed in users have the permission to post content   #
+# --> If a non-user navigates to this link:                  #
+# ------> 1.) A message is flashed warning the user          #
+# ------> 2.) User is redirected to the Home Page            #
+#              <---------------------------->                #
+# On successful login, the user is sent back to home page    #
+# ---------------------------------------------------------- #
 
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
@@ -139,21 +143,22 @@ def post_new_category_page():
         # if this is not a POST request and the user is logged in:
         permission = True
         categories = session.query(Category).all()
-        return render_template('post_category.html', permission=permission, categories=categories,
+        return render_template('post_category.html', permission=permission,
+                               categories=categories,
                                session_user=session_user)
 
     flash("You have to loggin before posting content.", "danger")
     return redirect(url_for('home_page'))
 
 
-#-------------------------------------------------------------#
-#--------------->   Delete Category Page   <------------------#
-#------------------------------------------------------------ #
-# Allows only signed in users to delete a selected category.  #
-# Shows a form with yes and no options with the name.         #
-# If no is selected, user is redirected back to home.         #
-# If yes is selected, category is deleted from database.      #
-#-------------------------------------------------------------#
+# ------------------------------------------------------------- #
+# --------------->   Delete Category Page   <------------------ #
+# ------------------------------------------------------------- #
+# Allows only signed in users to delete a selected category.    #
+# Shows a form with yes and no options with the name.           #
+# If no is selected, user is redirected back to home.           #
+# If yes is selected, category is deleted from database.        #
+# ------------------------------------------------------------- #
 
 
 @app.route('/category/<string:category_name>/delete', methods=['GET', 'POST'])
@@ -168,8 +173,10 @@ def delete_category_page(category_name):
         category = session.query(Category).filter_by(name=category_name).one()
         if request.method == 'POST':
             if request.form['delete'] == 'no':
-                return render_template('single_category.html', category=category,
-                                       permission=True, session_user=session_user,
+                return render_template('single_category.html',
+                                       category=category,
+                                       permission=True,
+                                       session_user=session_user,
                                        deleteQuestion=False, itemCheck=True)
 
             if request.form['delete'] == 'yes':
@@ -186,22 +193,22 @@ def delete_category_page(category_name):
         return redirect(url_for('home_page'))
 
 
-#----------------------------------------------------------------------------#
-#----------------------->   END OF Category Pages   <------------------------#
-#----------------------------------------------------------------------------#
+# ------------------------------------------------------------------ #
+# ------------------>   END OF Category Pages   <------------------- #
+# ------------------------------------------------------------------ #
 
-#----------------------------------------------------------------------------#
-#----------------------------->   Item Pages   <-----------------------------#
-#----------------------------------------------------------------------------#
+# ------------------------------------------------------------------ #
+# ------------------------>   Item Pages   <------------------------ #
+# ------------------------------------------------------------------ #
 
-#----------------------------------------------------------#
-#--------------->    Selected Item Page    <---------------#
-#----------------------------------------------------------#
-# Displays the title and description of selected item      #
-# If user is logged in, CRUD options are available under   #
-#----> the description. Only logged in users have the      #
-#----> permission to these CRUD options.                   #
-#----------------------------------------------------------#
+# ---------------------------------------------------------- #
+# --------------->    Selected Item Page    <--------------- #
+# ---------------------------------------------------------- #
+# Displays the title and description of selected item        #
+# If user is logged in, CRUD options are available under     #
+# ----> the description. Only logged in users have the       #
+# ----> permission to these CRUD options.                    #
+# ---------------------------------------------------------- #
 
 
 @app.route('/catalog/<string:category_id>/<string:item_id>')
@@ -218,28 +225,30 @@ def get_item_page(category_id, item_id):
         flash("Error finding item", "danger")
         return redirect(url_for('home_page'))
 
-    return render_template('single_item.html', item=item,  permission=permission,
-                           session_user=session_user, deleteQuestion=False)
+    return render_template('single_item.html', item=item,
+                           permission=permission,
+                           session_user=session_user,
+                           deleteQuestion=False)
 
 
-#--------------------------------------------------------------#
-#------------------>   Post New Item Page   <------------------#
-#--------------------------------------------------------------#
-#--> If User is not signed in:                                 #
-#------> 1.) Message is flashed warning them to sign in        #
-#------> 2.) User redirected to Home Page                      #
-#                <---------------------------->                #
-#--> If POST request is sent with an existing name in DB:      #
-#------> 1.) Message is flashed user warning of the name error #
-#------> 2.) Page is refreshed allowing user to try again      #
-#                <---------------------------->                #
-#--> If POST request is sent without a name:                   #
-#------> 1.) Message is flashed user warning of the name error #
-#------> 2.) Page is refreshed allowing user to try again      #
-#                <---------------------------->                #
-# On successful request, the user is told item was added and,  #
-#----> the user is redirected to the home page                 #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# ------------------>   Post New Item Page   <------------------ #
+# -------------------------------------------------------------- #
+# --> If User is not signed in:                                  #
+# ------> 1.) Message is flashed warning them to sign in         #
+# ------> 2.) User redirected to Home Page                       #
+#                <---------------------------->                  #
+# --> If POST request is sent with an existing name in DB:       #
+# ------> 1.) Message is flashed user warning of the name error  #
+# ------> 2.) Page is refreshed allowing user to try again       #
+#                <---------------------------->                  #
+# --> If POST request is sent without a name:                    #
+# ------> 1.) Message is flashed user warning of the name error  #
+# ------> 2.) Page is refreshed allowing user to try again       #
+#                <---------------------------->                  #
+# On successful request, the user is told item was added and,    #
+# ----> the user is redirected to the home page                  #
+# -------------------------------------------------------------- #
 
 
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
@@ -256,7 +265,8 @@ def post_new_item_page():
                 if name == item.name:
                     flash('''An item with name {0} already exists.
                         Items names must be unique.
-                        Try again with another name.'''.format(item.name), "danger")
+                        Try again with another name.'''.format(item.name),
+                          "danger")
                     return redirect(url_for('post_new_item_page'))
 
             new_item = createItem(category, name, description, user_id)
@@ -274,26 +284,28 @@ def post_new_item_page():
 
         permission = True
         categories = session.query(Category).all()
-        return render_template('post_new_item.html', permission=permission, categories=categories,
+        return render_template('post_new_item.html',
+                               permission=permission,
+                               categories=categories,
                                session_user=session_user)
 
     flash("You have to be logged in to add an item!", "danger")
     return redirect(url_for('home_page'))
 
 
-#--------------------------------------------------------------#
-#------------------>   Delete Item Page     <------------------#
-#--------------------------------------------------------------#
-#--> If User is not signed in:                                 #
-#------> 1.) Message is flashed warning them to sign in        #
-#------> 2.) User redirected to Home Page                      #
-#                <---------------------------->                #
-# This is an extension to the item description page            #
-#--> If the user clicks on the delete item option:             #
-#------> 1.) A menu will appear asking the user Yes or No      #
-#------> 2.) If yes, the item is deleted and user sent to home #
-#------> 3.) If no, the menu is hidden from item page          #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# ------------------>   Delete Item Page     <------------------ #
+# -------------------------------------------------------------- #
+# --> If User is not signed in:                                  #
+# ------> 1.) Message is flashed warning them to sign in         #
+# ------> 2.) User redirected to Home Page                       #
+#                <---------------------------->                  #
+# This is an extension to the item description page              #
+# --> If the user clicks on the delete item option:              #
+# ------> 1.) A menu will appear asking the user Yes or No       #
+# ------> 2.) If yes, the item is deleted and user sent to home  #
+# ------> 3.) If no, the menu is hidden from item page           #
+# -------------------------------------------------------------- #
 
 
 @app.route('/catalog/<string:item_id>/delete', methods=['GET', 'POST'])
@@ -312,12 +324,14 @@ def delete_item_page(item_id):
 
             if request.form['delete'] == 'delete_menu':
                 return render_template('single_item.html', item=item,
-                                       permission=permission, session_user=session_user,
+                                       permission=permission,
+                                       session_user=session_user,
                                        deleteQuestion=True, itemCheck=True)
 
             if request.form['delete'] == 'no':
                 return render_template('single_item.html', item=item,
-                                       permission=permission, session_user=session_user,
+                                       permission=permission,
+                                       session_user=session_user,
                                        deleteQuestion=False, itemCheck=True)
 
             if request.form['delete'] == 'yes':
@@ -331,28 +345,28 @@ def delete_item_page(item_id):
     return redirect(url_for('home_page'))
 
 
-#--------------------------------------------------------------#
-#------------------->   Edit Item Page   <---------------------#
-#--------------------------------------------------------------#
-#--> If User is not signed in:                                 #
-#------> 1.) Message is flashed warning them to sign in        #
-#------> 2.) User redirected to Home Page                      #
-#                <---------------------------->                #
-#--> If User is not the author of the selected item:           #
-#------> 1.) Message is flashed warning them ownership error   #
-#------> 2.) User redirected to Home Page                      #
-#                <---------------------------->                #
-#--> If User edits item name to an existing name in DB:        #
-#------> 1.) Message is flashed warning them of name error     #
-#------> 2.) Page is refreshed allowing user to try again      #
-#                <---------------------------->                #
-# This is an extension to the item description page            #
-#--> If the user clicks on the edit item option:               #
-#------> 1.) The user is redirected to the edit page           #
-#------> 2.) Here the item data is filled allowing easy edits  #
-#                <---------------------------->                #
-# After a successful edit user is sent back to the home page   #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# ------------------->   Edit Item Page   <--------------------- #
+# -------------------------------------------------------------- #
+# --> If User is not signed in:                                  #
+# ------> 1.) Message is flashed warning them to sign in         #
+# ------> 2.) User redirected to Home Page                       #
+#                <---------------------------->                  #
+# --> If User is not the author of the selected item:            #
+# ------> 1.) Message is flashed warning them ownership error    #
+# ------> 2.) User redirected to Home Page                       #
+#                <---------------------------->                  #
+# --> If User edits item name to an existing name in DB:         #
+# ------> 1.) Message is flashed warning them of name error      #
+# ------> 2.) Page is refreshed allowing user to try again       #
+#                <---------------------------->                  #
+# This is an extension to the item description page              #
+# --> If the user clicks on the edit item option:                #
+# ------> 1.) The user is redirected to the edit page            #
+# ------> 2.) Here the item data is filled allowing easy edits   #
+#                <---------------------------->                  #
+# After a successful edit user is sent back to the home page     #
+# -------------------------------------------------------------- #
 
 
 @app.route('/catalog/<string:item_id>/edit/', methods=['GET', 'POST'])
@@ -384,25 +398,27 @@ def edit_item_page(item_id):
         permission = True
         categories = session.query(Category).all()
         item = session.query(Item).filter_by(name=item_id).one()
-        return render_template('edit_item.html', permission=permission,
-                               session_user=session_user, categories=categories,
+        return render_template('edit_item.html',
+                               permission=permission,
+                               session_user=session_user,
+                               categories=categories,
                                item_id=item_id, item=item)
 
     flash("Only logged in users can edit items", "danger")
     return redirect(url_for('home_page'))
 
 
-#----------------------------------------------------------------------------#
-#-------------------------->   END OF Item Pages   <-------------------------#
-#----------------------------------------------------------------------------#
+# ------------------------------------------------------------------- #
+# ---------------------->   END OF Item Pages   <-------------------- #
+# ------------------------------------------------------------------- #
 
 
-#--------------------------------------------------------------#
-#---------------->  Google OAuth Connection  <-----------------#
-#--------------------------------------------------------------#
-#----> CREDIT: This function is heavily modeled after the code #
-#------------> in the Udacity lessons by by Lorenzo Brown      #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# ---------------->  Google OAuth Connection  <----------------- #
+# -------------------------------------------------------------- #
+# ----> CREDIT: This function is heavily modeled after the code  #
+# ------------> in the Udacity lessons by by Lorenzo Brown       #
+# -------------------------------------------------------------- #
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -425,7 +441,8 @@ def gconnect():
         return response
 
     access_token = credentials.access_token
-    url = ("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}".format(access_token))
+    url = ("https://www.googleapis.com/oauth2" +
+           "/v1/tokeninfo?access_token={0}".format(access_token))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
 
@@ -485,21 +502,23 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += '''" style = "width: 150px; height: 150px;border-radius: 150px;
-                -webkit-border-radius: 150px;-moz-border-radius: 150px;">'''
-    flash("you are now logged in as %s" % login_session['username'], "success")
+    output += '''"style = "width: 115px; height: 115px;border-radius: 115px;
+                -webkit-border-radius: 115px;-moz-border-radius: 115px;">'''
+    flash('''Welcome {0}!
+                You are now signed in.'''.format(login_session['username']),
+          "success")
     print("done!")
     global permission
     permission = True
     return output
 
 
-#--------------------------------------------------------------#
-#---------------->  Google OAuth Disconnect  <-----------------#
-#--------------------------------------------------------------#
-#----> CREDIT: This function is heavily modeled after the code #
-#------------> in the Udacity lessons by by Lorenzo Brown      #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# ---------------->  Google OAuth Disconnect  <----------------- #
+# -------------------------------------------------------------- #
+# ----> CREDIT: This function is heavily modeled after the code  #
+# ------------> in the Udacity lessons by by Lorenzo Brown       #
+# -------------------------------------------------------------- #
 
 
 @app.route('/gdisconnect')
@@ -529,12 +548,12 @@ def gdisconnect():
         return response
 
 
-#--------------------------------------------------------------#
-#----------------->  JSON Endpoint for APIs  <-----------------#
-#--------------------------------------------------------------#
-# This endpoint returns all database entries into JSON format  #
-# tHE JSON is printed out is stranded JSON form for API use    #
-#--------------------------------------------------------------#
+# -------------------------------------------------------------- #
+# ----------------->  JSON Endpoint for APIs  <----------------- #
+# -------------------------------------------------------------- #
+# This endpoint returns all database entries into JSON format    #
+# tHE JSON is printed out is stranded JSON form for API use      #
+# -------------------------------------------------------------- #
 
 
 @app.route('/catalog/json')

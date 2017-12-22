@@ -26,21 +26,32 @@
             <img src="{{ url_for('static', filename='img/code.jpg') }}">
             <div class="h1">Login to DevShare</div>
         </div>
+
         <div class="login-right">
-            <div class="h2"><strong> Sign In with Google </strong></div>
-            <br>
-            <div id="signInButton" class="col-sm-4">
-                <span class="g-signin" data-scope="openid email" data-clientid="173875917603-d9pnthbohkars23b0dlep2vns6n8hk9a.apps.googleusercontent.com"
-                    data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
-                    data-approvalprompt="force">
-                </span>
+            <div class="login-boxed">
+                <div class="h2">
+                    <strong>
+                        Sign In with Google
+                    </strong>
+                </div>
+
+                <p class="divider">
+                    <span class="divider"></span>
+                </p>
+
+                <div id="signInButton" class="col-sm-4">
+                    <span class="g-signin" data-scope="openid email" data-clientid="173875917603-d9pnthbohkars23b0dlep2vns6n8hk9a.apps.googleusercontent.com"
+                        data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
+                        data-approvalprompt="force">
+                    </span>
+                </div>
+                
             </div>
             <div id="result" class="login-result"></div>
 
         </div>
+
     </div>
-
-
 
     <script src="{{ url_for('static', filename='js/login_page.js') }}"></script>
     <script>
@@ -73,7 +84,6 @@
         }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
 
 </body>
 
