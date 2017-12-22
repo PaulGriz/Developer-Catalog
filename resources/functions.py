@@ -1,6 +1,3 @@
-import httplib2
-import requests
-import json
 import random
 import string
 from models.database_setup import Base, Category, Item, User

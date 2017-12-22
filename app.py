@@ -125,7 +125,7 @@ def get_item_page(category_id, item_id):
 
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
-def post_new_category():
+def post_new_category_page():
     if 'username' in login_session:
         if request.method == 'POST':
             name = request.form['name']
