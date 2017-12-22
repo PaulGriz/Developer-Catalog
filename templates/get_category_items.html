@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-6">
+        <h2>Categories</h2>
+        <ul class="list-group">
+            {% for category in categories %}
+            {% if category == selected_category %}
+            <li class="list-group-item disabled">
+            {% else %}
+            <li class="list-group-item">
+            {% endif %}
+                <span class="badge">{{number_of_items}}</span>
+                <a href="{{url_for('get_category_items_page', category_id=category.name)}}">{{category.name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    <div class="col-sm-6">
+        <h2>
+            {{selected_category.name}} Items
+
+            {% if number_of_items == 1 %}
+            ({{number_of_items}} item)
+            {% else %}
+            ({{number_of_items}} items)
+            {% endif %}
+        </h2>
+        <div class="items">
+            <ul class="list-group">
+                {% for item in selected_category_items %}
+                    <li class="list-group-item">
+                        <a href="{{url_for('get_item_page', item_id=item.name, category_id=selected_category.name)}}">{{item.name}}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <br>
+            <a href="/category/{{selected_category.name}}/delete">Click to Delete</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

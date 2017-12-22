@@ -1,8 +1,8 @@
 .footer_content {
     top: 50%;
     left: 50%;
+    margin: auto;
     transform: translate(-50%, -50%);
-    display: block;
 }
 
 .icon {
@@ -58,8 +58,10 @@
 }
 
 footer {
+    margin-top: 25px;
     height: 175px;
     align-content: center;
     justify-content: center;
     text-align: center;
+    display: relative;
 }
