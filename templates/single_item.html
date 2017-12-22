@@ -6,16 +6,16 @@
 
         {% if permission == True %}
             <div class="form-group">
-                <form class="form-inline" action="{{url_for('editItem', item_id=item.name)}}" method="get">
+                <form class="form-inline" action="{{url_for('edit_item_page', item_id=item.name)}}" method="get">
                     <button class="form-control" type="submit" name="edit" value="edit">Edit</button>
                 </form>
             {% if deleteQuestion == False %}
-                <form class="form-inline" action="{{url_for('deleteItem', item_id=item.name)}}" method="post">
-                    <button class="form-control" type="submit" name="delete" value="maybe">Delete</button>
+                <form class="form-inline" action="{{url_for('delete_item_page', item_id=item.name)}}" method="post">
+                    <button class="form-control" type="submit" name="delete" value="delete_menu">Delete</button>
                 </form>
             </div>
             {% else %}
-                <form class="form-inline" action="{{url_for('deleteItem', item_id=item.name)}}" method="post">
+                <form class="form-inline" action="{{url_for('delete_item_page', item_id=item.name)}}" method="post">
                     Are you sure you want to delete?
                     <button class="form-control" type="submit" name="delete" value="yes">Yes</button>
                     <button class="form-control" type="submit" name="delete" value="no">No</button>

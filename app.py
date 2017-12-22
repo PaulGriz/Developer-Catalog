@@ -63,50 +63,6 @@ def login_page():
     return render_template('login.html', STATE=state)
 
 
-#-------------------------------------------------------------#
-#---------------    Delete Category Page    ------------------#
-#------------------------------------------------------------ #
-# Allows only signed in users to delete a selected category.  #
-# Shows a form with yes and no options with the name.         #
-# If no is selected, user is redirected back to home.         #
-# If yes is selected, category is deleted from database.      #
-#-------------------------------------------------------------#
-
-
-@app.route('/category/<string:category_name>/delete', methods=['GET', 'POST'])
-def delete_category_page(category_name):
-    if 'username' not in login_session:
-        permission = False
-        flash("You must be logged in to delete an item!", "danger")
-        return redirect(url_for('home_page'))
-
-    elif 'username' in login_session:
-        permission = True
-        category = session.query(Category).filter_by(name=category_name).one()
-        if request.method == 'POST':
-            if request.form['delete'] == 'no':
-                return render_template('single_category.html',
-                                       category=category,
-                                       permission=True,
-                                       session_user=session_user,
-                                       deleteQuestion=False,
-                                       itemCheck=True)
-            if request.form['delete'] == 'yes':
-                delete_category(category.id)
-                flash("{0} was deleted".format(category.name), "success")
-                return redirect(url_for('home_page'))
-        else:
-            return render_template('single_category.html',
-                                   category=category,
-                                   permission=True,
-                                   session_user=session_user,
-                                   deleteQuestion=True,
-                                   categoryloaded=True)
-    else:
-        flash("Error Deleting Category!", "danger")
-        return redirect(url_for('home_page'))
-
-
 #--------------------------------------------------------------#
 #------------     Selected Category Items Page     ------------#
 #--------------------------------------------------------------#
@@ -128,10 +84,8 @@ def get_category_items_page(category_id):
     number_of_items = count_items(selected_category)
     print(number_of_items)
     return render_template('get_category_items.html',
-                           categories=categories,
-                           selected_category_items=selected_category_items,
-                           selected_category=selected_category,
-                           number_of_items=number_of_items,
+                           categories=categories, selected_category_items=selected_category_items,
+                           selected_category=selected_category, number_of_items=number_of_items,
                            permission=permission)
 
 
@@ -159,170 +113,12 @@ def get_item_page(category_id, item_id):
         flash("Error finding item", "danger")
         return redirect(url_for('home_page'))
 
-    return render_template('itemDescription.html',
-                        item=item,
-                        permission=permission,
-                        session_user=session_user,
-                        deleteQuestion=False)
+    return render_template('single_item.html', item=item,  permission=permission,
+                        session_user=session_user, deleteQuestion=False)
 
 
 #----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
-#----------------------------------------------------------#
-# ------> TODO Enter explanation for the page              #
-#----------------------------------------------------------#
-
-
-@app.route('/catalog/item/new', methods=['GET', 'POST'])
-def addItem():
-    if 'username' in login_session:
-        if request.method == 'POST':
-            name = request.form['name']
-            description = request.form['description']
-            category = request.form['category']
-            user_id = get_user_email(login_session["email"])
-
-            # Check whether the name already exists
-            all_categories = session.query(Item).all()
-            for e in all_categories:
-                if name == e.name:
-                    flash(
-                        '''This item name already exists.
-                        Your item was not created.''',
-                        "danger")
-                    return redirect(url_for('home_page'))
-
-            # createItem() returns True if item was successfully created
-            check = createItem(category, name, description, user_id)
-            if check is True:
-                catNameAdded = session.query(
-                    Category).filter_by(id=category).one()
-                flash(
-                    "Added %s to %s category." %
-                    (name, catNameAdded.name), "success")
-                return redirect(url_for('home_page'))
-            else:
-                flash("Item was not created. You must include a name!",
-                      "danger")
-                return redirect(url_for('home_page'))
-        else:
-            # if this is not a POST request and the user is logged in:
-            permission = True
-            categories = session.query(Category).all()
-            return render_template('addItem.html',
-                                   permission=permission,
-                                   categories=categories,
-                                   session_user=session_user)
-    else:
-        # if the user is not logged in:
-        flash("You have to be logged in to add an item!", "danger")
-        return redirect(url_for('home_page'))
-
-
-#----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
-#----------------------------------------------------------#
-# ------> TODO Enter explanation for the page              #
-#----------------------------------------------------------#
-
-
-@app.route('/catalog/<string:item_id>/delete', methods=['GET', 'POST'])
-def deleteItem(item_id):
-    if 'username' not in login_session:
-        permission = False
-        flash("You must be logged in to delete an item!", "danger")
-        return redirect(url_for('home_page'))
-    elif 'username' in login_session:
-        permission = True
-        item = session.query(Item).filter_by(name=item_id).one()
-        creator = session.query(User).filter_by(id=item.user_id).one()
-        if login_session['user_id'] == creator.id:
-            if request.method == 'POST':
-                # the first time a user clicks delete,
-                # itemCheck is set to True, which will render the template
-                # with a yes or no option
-                if request.form['delete'] == 'maybe':
-                    return render_template('itemDescription.html',
-                                           item=item,
-                                           permission=permission,
-                                           session_user=session_user,
-                                           deleteQuestion=True,
-                                           itemCheck=True)
-                # the user has selected no to the deletion
-                if request.form['delete'] == 'no':
-                    return render_template('itemDescription.html',
-                                           item=item,
-                                           permission=permission,
-                                           session_user=session_user,
-                                           deleteQuestion=False,
-                                           itemCheck=True)
-                # the user has selected yes to the deletion
-                if request.form['delete'] == 'yes':
-                    itemToDelete = session.query(
-                        Item).filter_by(name=item_id).one()
-                    deleteItemFunction(itemToDelete.id)
-                    flash("%s was deleted" % item.name, "success")
-                    return redirect(url_for('home_page'))
-        else:
-            flash("You cannot delete what you did not create!", "danger")
-            return redirect(url_for('home_page'))
-
-
-#----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
-#----------------------------------------------------------#
-# ------> TODO Enter explanation for the page              #
-#----------------------------------------------------------#
-
-
-@app.route('/catalog/<string:item_id>/edit/', methods=['GET', 'POST'])
-def editItem(item_id):
-    editedItem = session.query(Item).filter_by(name=item_id).one()
-    if 'username' in login_session:
-        # check if user owns the item
-        if editedItem.user_id != login_session['user_id']:
-            flash("You can only edit the items you own!", "danger")
-            return redirect(url_for('home_page'))
-        if request.method == 'POST':
-            name = request.form['name']
-            description = request.form['description']
-            # note that this is the category id
-            category = request.form['category']
-
-            # check if name already exists
-            all_categories = session.query(Item).all()
-            for e in all_categories:
-                if name == e.name:
-                    flash(
-                        '''This item name already exists.
-                        Your item was not edited.''',
-                        "danger")
-                    return redirect(url_for('home_page'))
-
-            # if the name is unique, continue to edit the item
-            flash("You edited %s" % editedItem.name, "info")
-            editItemFunction(category, editedItem.id, name, description)
-            return redirect(url_for('home_page'))
-        else:
-            # if this isn't a POST request, then render the editItem template:
-            permission = True
-            categories = session.query(Category).all()
-            item = session.query(Item).filter_by(name=item_id).one()
-            return render_template('editItem.html',
-                                   permission=permission,
-                                   session_user=session_user,
-                                   categories=categories,
-                                   item_id=item_id,
-                                   item=item)
-    else:
-        flash(
-            "You can only edit the items you own! Log in to proper account.",
-            "danger")
-        return redirect(url_for('home_page'))
-
-
-#----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
+#-----------      Post New Category Page        -----------#
 #----------------------------------------------------------#
 # ------> TODO Enter explanation for the page              #
 #----------------------------------------------------------#
@@ -339,10 +135,8 @@ def post_new_category():
             all_categories = session.query(Category).all()
             for category in all_categories:
                 if name == category.name:
-                    flash(
-                        '''This Category already exists.
-                        The Category was not created.''',
-                        "danger")
+                    flash('''This Category already exists.
+                        The Category was not created.''', "danger")
                     return redirect(url_for('home_page'))
 
             # createItem() returns True if item was successfully created
@@ -350,18 +144,190 @@ def post_new_category():
             if check is True:
                 flash("{0} was successfully add.".format(name), "success")
                 return redirect(url_for('home_page'))
+
+            flash("Category not added. Missing: New Category's Name.", "danger")
+            return redirect(url_for('home_page'))
+
+        # if this is not a POST request and the user is logged in:
+        permission = True
+        categories = session.query(Category).all()
+        return render_template('post_category.html', permission=permission, categories=categories, session_user=session_user)
+
+
+#----------------------------------------------------------#
+#-----------         Post New Item Page         -----------#
+#----------------------------------------------------------#
+# ------> TODO Enter explanation for the page              #
+#----------------------------------------------------------#
+
+
+@app.route('/catalog/item/new', methods=['GET', 'POST'])
+def post_new_item_page():
+    if 'username' in login_session:
+        if request.method == 'POST':
+            name = request.form['name']
+            description = request.form['description']
+            category = request.form['category']
+            user_id = get_user_email(login_session["email"])
+
+            all_items = session.query(Item).all()
+            for item in all_items:
+                if name == item.name:
+                    flash('''This item name already exists.
+                        Your item was not created.''', "danger")
+                    return redirect(url_for('home_page'))
+
+            
+            new_item = createItem(category, name, description, user_id)
+            if new_item is True:
+                owning_category = session.query(Category).filter_by(id=category).one()
+                flash("Added {0} to {1} category.".format(name, owning_category.name), "success")
+                return redirect(url_for('home_page'))
             else:
-                flash("Category not added. Missing: New Category's Name.", "danger")
+                flash("Item was not created. You must include a name!",
+                      "danger")
                 return redirect(url_for('home_page'))
         else:
-            # if this is not a POST request and the user is logged in:
             permission = True
             categories = session.query(Category).all()
-            return render_template('post_category.html', permission=permission, categories=categories, session_user=session_user)
+            return render_template('post_new_item.html', permission=permission, categories=categories,
+                                   session_user=session_user)
     else:
-        # if the user is not logged in:
         flash("You have to be logged in to add an item!", "danger")
         return redirect(url_for('home_page'))
+
+
+#-------------------------------------------------------------#
+#---------------    Delete Category Page    ------------------#
+#------------------------------------------------------------ #
+# Allows only signed in users to delete a selected category.  #
+# Shows a form with yes and no options with the name.         #
+# If no is selected, user is redirected back to home.         #
+# If yes is selected, category is deleted from database.      #
+#-------------------------------------------------------------#
+
+
+@app.route('/category/<string:category_name>/delete', methods=['GET', 'POST'])
+def delete_category_page(category_name):
+    if 'username' not in login_session:
+        permission = False
+        flash("You must be logged in to delete an item!", "danger")
+        return redirect(url_for('home_page'))
+
+    elif 'username' in login_session:
+        permission = True
+        category = session.query(Category).filter_by(name=category_name).one()
+        if request.method == 'POST':
+            if request.form['delete'] == 'no':
+                return render_template('single_category.html', category=category,
+                                       permission=True, session_user=session_user,
+                                       deleteQuestion=False, itemCheck=True)
+
+            if request.form['delete'] == 'yes':
+                delete_category(category.id)
+                flash("{0} was deleted".format(category.name), "success")
+                return redirect(url_for('home_page'))
+        else:
+            return render_template('single_category.html', category=category,
+                                   permission=True, session_user=session_user,
+                                   deleteQuestion=True, categoryloaded=True)
+
+    else:
+        flash("Error Deleting Category!", "danger")
+        return redirect(url_for('home_page'))
+
+
+#----------------------------------------------------------#
+#-----------         Delete Item Page           -----------#
+#----------------------------------------------------------#
+# ------> TODO Enter explanation for the page              #
+#----------------------------------------------------------#
+
+
+@app.route('/catalog/<string:item_id>/delete', methods=['GET', 'POST'])
+def delete_item_page(item_id):
+    if 'username' not in login_session:
+        permission = False
+        flash("You must be logged in to delete an item!", "danger")
+        return redirect(url_for('home_page'))
+
+    permission = True
+    item = session.query(Item).filter_by(name=item_id).one()
+    owner = session.query(User).filter_by(id=item.user_id).one()
+
+    if login_session['user_id'] == owner.id:
+        if request.method == 'POST':
+
+            if request.form['delete'] == 'delete_menu':
+                return render_template('single_item.html', item=item,
+                                        permission=permission, session_user=session_user,
+                                        deleteQuestion=True, itemCheck=True)
+
+            if request.form['delete'] == 'no':
+                return render_template('single_item.html', item=item,
+                                        permission=permission, session_user=session_user,
+                                        deleteQuestion=False, itemCheck=True)
+
+            if request.form['delete'] == 'yes':
+                selected_item = session.query(Item).filter_by(name=item_id).one()
+                delete_item(selected_item.id)
+                flash("{0} was deleted".format(item.name), "success")
+                return redirect(url_for('home_page'))
+
+    flash("You cannot delete what you did not create!", "danger")
+    return redirect(url_for('home_page'))
+
+
+#----------------------------------------------------------#
+#-----------          Edit Item Page            -----------#
+#----------------------------------------------------------#
+# ------> TODO Enter explanation for the page              #
+#----------------------------------------------------------#
+
+
+@app.route('/catalog/<string:item_id>/edit/', methods=['GET', 'POST'])
+def edit_item_page(item_id):
+    selected_item = session.query(Item).filter_by(name=item_id).one()
+    if 'username' in login_session:
+
+        if selected_item.user_id != login_session['user_id']:
+            flash("You can only edit the items you own!", "danger")
+            return redirect(url_for('home_page'))
+
+        if request.method == 'POST':
+            name = request.form['name']
+            description = request.form['description']
+            category = request.form['category']
+
+            # check if name already exists
+            all_items = session.query(Item).all()
+            for item in all_items:
+                if name == item.name:
+                    flash(
+                        '''This item name already exists.
+                        Your item was not edited.''',
+                        "danger")
+                    return redirect(url_for('home_page'))
+
+            # if the name is unique, continue to edit the item
+            flash("You edited {0}".format(selected_item.name), "info")
+            edit_item(category, selected_item.id, name, description)
+            return redirect(url_for('home_page'))
+
+        permission = True
+        categories = session.query(Category).all()
+        item = session.query(Item).filter_by(name=item_id).one()
+        return render_template('edit_item.html', permission=permission,
+                                session_user=session_user, categories=categories,
+                                item_id=item_id, item=item)
+
+    flash("You can only edit the items you own! Log in to proper account.", "danger")
+    return redirect(url_for('home_page'))
+
+
+    # if the user is not logged in:
+    flash("You have to be logged in to add an item!", "danger")
+    return redirect(url_for('home_page'))
 
 
 def post_new_category(category_name):
@@ -394,7 +360,7 @@ def createItem(category_id, itemName, description, user_id):
         return True
 
 
-def editItemFunction(category_id, item_id, newName, newDescription):
+def edit_item(category_id, item_id, newName, newDescription):
     item = session.query(Item).filter_by(id=item_id).one()
     if newName:
         item.name = newName
@@ -406,7 +372,7 @@ def editItemFunction(category_id, item_id, newName, newDescription):
     session.commit()
 
 
-def deleteItemFunction(item_id):
+def delete_item(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     session.delete(item)
     session.commit()
@@ -419,15 +385,13 @@ def count_items(category):
 
 
 #----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
+#-----------      Google OAuth Connection       -----------#
 #----------------------------------------------------------#
 # ------> TODO Enter explanation for the page              #
 #----------------------------------------------------------#
 
 
-# This function and the `login.html` template have been adapted from the
-# code used in the Udacity course by Lorenzo Brown
-# note that some of the comments were created by Udacity
+# Code is modeled after lessions by Lorenzo Brown
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -521,13 +485,13 @@ def gconnect():
 
 
 #----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
+#-----------      Google OAuth Disconnect       -----------#
 #----------------------------------------------------------#
 # ------> TODO Enter explanation for the page              #
 #----------------------------------------------------------#
-# Logout
-# This function has been adapted from the code used in the Udacity course
-# by Lorenzo Brown
+
+
+# Code is modeled after lessions by Lorenzo Brown
 
 
 @app.route('/gdisconnect')
@@ -587,7 +551,7 @@ def get_user_email(email):
 
 
 #----------------------------------------------------------#
-#-----------    TODO Enter Page Description     -----------#
+#-----------       JSON Endpoint for APIs       -----------#
 #----------------------------------------------------------#
 # ------> TODO Enter explanation for the page              #
 #----------------------------------------------------------#
