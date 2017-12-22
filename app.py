@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models.database_setup import Base, Category, Item, User
-from resources.functions import ApiEndpoints, CategoryFunctions, ItemFunctions
+from resources.functions import *
 
 app = Flask(__name__, static_folder='static')
 engine = create_engine('sqlite:///devshareDB.db')
@@ -44,8 +44,8 @@ def home_page():
         permission = False
     else:
         permission = True
-    categories = CategoryFunctions.get_all_categories()
-    newest_items = ItemFunctions.get_5_newest_items()
+    categories = get_all_categories()
+    newest_items = get_5_newest_items()
 
     print(state)
     return render_template('home.html', categories=categories, newest_items=newest_items,
@@ -134,7 +134,7 @@ def post_new_category_page():
                 flash("{0} was successfully add.".format(name), "success")
                 return redirect(url_for('home_page'))
 
-            flash("Category not added. Missing: New Category's Name.", "danger")
+            flash("Category not added. Needed: New Category's Name", "danger")
             return redirect(url_for('home_page'))
 
         # if this is not a POST request and the user is logged in:
@@ -394,60 +394,6 @@ def edit_item_page(item_id):
 #----------------------------------------------------------------------------#
 
 
-def post_new_category(category_name):
-    if category_name == '':
-        return False
-    else:
-        new_category = Category(name=category_name)
-        session.add(new_category)
-        session.commit()
-        return True
-
-
-def delete_category(category_id):
-    category = session.query(Category).filter_by(id=category_id).one()
-    session.delete(category)
-    session.commit()
-
-
-def createItem(category_id, itemName, description, user_id):
-    if itemName == '':
-        return False
-    else:
-        newItem = Item(
-            name=itemName,
-            description=description,
-            category_id=category_id,
-            user_id=user_id)
-        session.add(newItem)
-        session.commit()
-        return True
-
-
-def edit_item(category_id, item_id, newName, newDescription):
-    item = session.query(Item).filter_by(id=item_id).one()
-    if newName:
-        item.name = newName
-    if newDescription:
-        item.description = newDescription
-    if category_id:
-        item.category_id = category_id
-    session.add(item)
-    session.commit()
-
-
-def delete_item(item_id):
-    item = session.query(Item).filter_by(id=item_id).one()
-    session.delete(item)
-    session.commit()
-
-
-def count_items(category):
-    items = session.query(Item).filter_by(category_id=category.id).all()
-    total = len(list(items))
-    return total
-
-
 #--------------------------------------------------------------#
 #------------->     Google OAuth Connection      <-------------#
 #--------------------------------------------------------------#
@@ -581,35 +527,6 @@ def gdisconnect():
         return response
 
 
-def get_single_category(category_id):
-    category = session.query(Category).filter_by(id=category_id).one()
-    return category.name
-
-
-def session_user():
-    if 'username' not in login_session:
-        return "Not Logged"
-    else:
-        return '%s' % login_session["username"]
-
-
-def post_new_user(login_session):
-    newUser = User(name=login_session['username'], email=login_session[
-                   'email'], picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    return user.id
-
-
-def get_user_email(email):
-    try:
-        user = session.query(User).filter_by(email=email).one()
-        return user.id
-    except BaseException:
-        return None
-
-
 #--------------------------------------------------------------#
 #------------->      JSON Endpoint for APIs      <-------------#
 #--------------------------------------------------------------#
@@ -620,7 +537,7 @@ def get_user_email(email):
 
 @app.route('/catalog/json')
 def json_page():
-    return ApiEndpoints.catalogJSON()
+    return catalogJSON()
 
 
 if __name__ == '__main__':
