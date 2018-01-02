@@ -1,5 +1,8 @@
-Developer-Catalog
-=============
+> # **Developer Catalog**
+> ### **A Udacity Project Submission**
+>> **Date: January 2, 2018**  
+>> **By: Paul Griz**  
+---
 
 ## Steps to Run Project:
 
@@ -16,6 +19,7 @@ Developer-Catalog
 7. Initially, no categories or items will be found on the home page
 8. So, you must sign in and post content to view it on the home page
 
+--- 
 
 ## Requirements:
 
@@ -30,3 +34,5 @@ Developer-Catalog
 
    4. **Flask-SQLAlchemy**  
    	   - Command to Download: ``pip install Flask-SQLAlchemy``
+
+---
