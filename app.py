@@ -1,29 +1,39 @@
+# Built in Libraries
 import json
 import random
 import string
-
 import httplib2
 import requests
+
+# Flask Imports
 from flask import session as login_session
 from flask import (Flask, flash, make_response, redirect,
                    render_template, request, url_for)
+
+# Google Signin Imports
 from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
+
+# SQLAlchemy Imports
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+# Files From Project Imports
 from models.database_setup import Base, Category, Item, User
 from resources.functions import *
 
+# Defining App and Connecting Database
 app = Flask(__name__, static_folder='static')
 engine = create_engine('sqlite:///devshareDB.db')
 Base.metadata.bind = engine
 db_session = sessionmaker(bind=engine)
 session = db_session()
 
+# Assigns the Client ID used for Google OAuth Signin
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 APPLICATION_NAME = "DevShare"
 
+# Generated a random 32 character string. Used for Login Sessions
 state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in range(32))
 
