@@ -1,7 +1,10 @@
 Flask
 Flask-RESTful
-Flask-JWT
 Flask-SQLAlchemy
-uwsgi
+SQLAlchemy
+sqlalchemy.orm
+Jinja2
+oauth2client
+gunicorn
 psycopg2
 datetime
