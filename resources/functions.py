@@ -1,17 +1,24 @@
-from models.database_setup import Category, Item, User
+import os
+
+from models.database_setup import Base, Category, Item, User
+
 from flask import session as login_session
 from flask import jsonify
-from sqlalchemy import create_engine
+
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
-from db import db
+
+
+
 # ---------------------------------------------------------------------- #
 # ---------------------->   Database Connection   <--------------------- #
 # ---------------------------------------------------------------------- #
 
-engine = create_engine('sqlite:///devshareDB.db')
-db.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+url = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
+engine = create_engine(url)
+Base.metadata.create_all(engine)
+db_session = sessionmaker(bind=engine)
+session = db_session()
 
 # ---------------------------------------------------------------------- #
 # --------------------->   Application Functions   <-------------------- #

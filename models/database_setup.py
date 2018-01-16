@@ -1,20 +1,25 @@
-from db import db
+import os
+from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+
+Base = declarative_base()
 
 
-class User(db.Model):
+class User(Base):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
-    email = db.Column(db.String(250), nullable=False)
-    picture = db.Column(db.String(250))
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    picture = Column(String(250))
 
 
-class Category(db.Model):
+class Category(Base):
     __tablename__ = 'category'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship(User)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -22,15 +27,15 @@ class Category(db.Model):
                 'id': self.id}
 
 
-class Item(db.Model):
+class Item(Base):
     __tablename__ = 'item'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    description = db.Column(db.String(250))
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    category = db.relationship(Category)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship(User)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    description = Column(String(250))
+    category_id = Column(Integer, ForeignKey('category.id'))
+    category = relationship(Category)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -39,3 +44,6 @@ class Item(db.Model):
                 'description': self.description}
 
 
+url = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
+engine = create_engine(url)
+Base.metadata.create_all(engine)

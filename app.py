@@ -15,19 +15,19 @@ from flask import (Flask, flash, make_response, redirect,
 from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
 
 # SQLAlchemy Imports
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 
 # Files From Project Imports
-from models.database_setup import Category, Item, User
+from models.database_setup import Base, Category, Item, User
 from resources.functions import *
 
 # Defining App and Connecting Database
 app = Flask(__name__, static_folder='static')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'sqlite://data.db')
-engine = create_engine('DATABASE_URL')
-db.metadata.bind = engine
+url = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = url
+engine = create_engine(url)
+Base.metadata.create_all(engine)
 db_session = sessionmaker(bind=engine)
 session = db_session()
 
