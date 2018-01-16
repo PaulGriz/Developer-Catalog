@@ -1,7 +1,7 @@
 Flask
+Flask-RESTful
+Flask-JWT
 Flask-SQLAlchemy
-Jinja2
-gunicorn
-wsgiref
 uwsgi
 psycopg2
+datetime

@@ -1,15 +1,15 @@
-from models.database_setup import Base, Category, Item, User
+from models.database_setup import Category, Item, User
 from flask import session as login_session
 from flask import jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
+from db import db
 # ---------------------------------------------------------------------- #
 # ---------------------->   Database Connection   <--------------------- #
 # ---------------------------------------------------------------------- #
 
 engine = create_engine('sqlite:///devshareDB.db')
-Base.metadata.bind = engine
+db.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 

@@ -1,4 +1,5 @@
 # Built in Libraries
+import os
 import json
 import random
 import string
@@ -18,13 +19,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Files From Project Imports
-from models.database_setup import Base, Category, Item, User
+from models.database_setup import Category, Item, User
 from resources.functions import *
 
 # Defining App and Connecting Database
 app = Flask(__name__, static_folder='static')
-engine = create_engine('sqlite:///devshareDB.db')
-Base.metadata.bind = engine
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL', 'sqlite://data.db')
+engine = create_engine('DATABASE_URL')
+db.metadata.bind = engine
 db_session = sessionmaker(bind=engine)
 session = db_session()
 
