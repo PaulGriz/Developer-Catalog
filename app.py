@@ -19,10 +19,9 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 
 # Files From Project Imports
-from models.database_setup import Base, Category, Item, User
 from resources.functions import *
 from config import Config
-
+from db import db, Category, Item, User
 
 # Defining App and Connecting Database
 app = Flask(__name__, static_folder='static')
@@ -30,9 +29,9 @@ app.config.from_object(Config)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-Base.metadata.create_all(engine)
-db_session = sessionmaker(bind=engine)
-session = db_session()
+db.metadata.create_all(engine)
+db.session = sessionmaker(bind=engine)
+session = db.session()
 
 # Assigns the Client ID used for Google OAuth Signin
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
@@ -578,6 +577,6 @@ def json_page():
 
 
 if __name__ == '__main__':
-    app.secret_key = 'quantum_proof_password'
-    app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    db.create_all()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

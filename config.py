@@ -11,9 +11,9 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = 'this-really-needs-to-be-changed'
+    SECRET_KEY = 'quantum-proof-password'
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL', 'sqlite:///comments.db')
+        'DATABASE_URL', 'sqlite:///developer-catalog.db')
 
 
 class ProductionConfig(Config):

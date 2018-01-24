@@ -1,3 +1,4 @@
+"""
 import os
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -47,3 +48,4 @@ class Item(Base):
 url = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
 engine = create_engine(url)
 Base.metadata.create_all(engine)
+"""

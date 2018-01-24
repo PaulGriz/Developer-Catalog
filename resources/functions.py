@@ -1,6 +1,6 @@
 import os
 
-from models.database_setup import Base, Category, Item, User
+from db import db, Category, Items, User
 
 from flask import session as login_session
 from flask import jsonify
@@ -15,9 +15,9 @@ from config import Config
 # ---------------------------------------------------------------------- #
 
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-Base.metadata.create_all(engine)
-db_session = sessionmaker(bind=engine)
-session = db_session()
+db.metadata.create_all(engine)
+db.session = sessionmaker(bind=engine)
+session = db.session()
 
 # ---------------------------------------------------------------------- #
 # --------------------->   Application Functions   <-------------------- #
