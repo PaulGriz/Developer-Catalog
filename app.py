@@ -21,12 +21,15 @@ from sqlalchemy.orm import sessionmaker
 # Files From Project Imports
 from models.database_setup import Base, Category, Item, User
 from resources.functions import *
+from config import Config
+
 
 # Defining App and Connecting Database
 app = Flask(__name__, static_folder='static')
-url = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = url
-engine = create_engine(url)
+app.config.from_object(Config)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 Base.metadata.create_all(engine)
 db_session = sessionmaker(bind=engine)
 session = db_session()

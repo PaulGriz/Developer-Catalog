@@ -7,15 +7,14 @@ from flask import jsonify
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
-
+from config import Config
 
 
 # ---------------------------------------------------------------------- #
 # ---------------------->   Database Connection   <--------------------- #
 # ---------------------------------------------------------------------- #
 
-url = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
-engine = create_engine(url)
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 Base.metadata.create_all(engine)
 db_session = sessionmaker(bind=engine)
 session = db_session()
