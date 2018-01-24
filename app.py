@@ -11,6 +11,8 @@ from flask import session as login_session
 from flask import (Flask, flash, make_response, redirect,
                    render_template, request, url_for)
 
+from flask import current_app as app
+
 # Google Signin Imports
 from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
 
@@ -29,9 +31,8 @@ app.config.from_object(Config)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-db.metadata.create_all(engine)
-db.session = sessionmaker(bind=engine)
-session = db.session()
+metadata = MetaData(bind=engine)
+session = sessionmaker(bind=engine)
 
 # Assigns the Client ID used for Google OAuth Signin
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
@@ -58,8 +59,8 @@ def home_page():
         permission = False
     else:
         permission = True
-    categories = get_all_categories()
-    newest_items = get_5_newest_items()
+    categories = Category.query.all()
+    newest_items = Item.query.order_by(Item.id.desc()).limit(5)
 
     return render_template('home.html', categories=categories,
                            newest_items=newest_items,
@@ -577,6 +578,8 @@ def json_page():
 
 
 if __name__ == '__main__':
+    from db import db
     db.create_all()
+    db.init_app(app)
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

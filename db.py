@@ -1,4 +1,3 @@
-import os
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -11,7 +10,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship(db.User)
+    user = db.relationship('user')
 
     def __init__(self, name):
         self.name = name
@@ -52,7 +51,7 @@ class Item(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship(db.User)
+    user = db.relationship('user')
 
     @property
     def serialize(self):
@@ -60,18 +59,17 @@ class Item(db.Model):
                 'id': self.id,
                 'description': self.description}
 
-    def __init__(self, name, description, category_id, user):
+    def __init__(self, name, description, category_id, user_id):
         self.name = name
         self.description = description
         self.category_id = category_id
-        self.user = user
+        self.user_id = user_id
 
     def json(self):
         return {
         'name': self.name,
         'description': self.description,
-        'category_id': self.category_id,
-        'user': self.user
+        'category_id': self.category_id
         }
 
     @classmethod
@@ -92,7 +90,7 @@ class Item(db.Model):
 
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)

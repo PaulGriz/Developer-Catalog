@@ -1,6 +1,6 @@
 import os
 
-from db import db, Category, Items, User
+from db import db, Category, Item, User
 
 from flask import session as login_session
 from flask import jsonify
@@ -15,9 +15,8 @@ from config import Config
 # ---------------------------------------------------------------------- #
 
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-db.metadata.create_all(engine)
-db.session = sessionmaker(bind=engine)
-session = db.session()
+metadata = MetaData(bind=engine)
+session = sessionmaker(bind=engine)
 
 # ---------------------------------------------------------------------- #
 # --------------------->   Application Functions   <-------------------- #
@@ -46,7 +45,7 @@ def catalogJSON():
 # ---------------------------------------------------------------------- #
 
 def get_all_categories():
-    categories = session.query(Category).all()
+    categories = Category.query.all()
     return categories
 
 
@@ -77,7 +76,7 @@ def delete_category(category_id):
 
 
 def get_5_newest_items():
-    items = session.query(Item).order_by(Item.id.desc()).limit(5)
+    items = Item.query.order_by(Item.id.desc()).limit(5)
     return items
 
 
