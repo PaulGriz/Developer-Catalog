@@ -16,7 +16,8 @@ from flask import Flask, flash, make_response, redirect, \
 from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
 
 # SQLAlchemy Imports
-
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
 
 # Files From Project Imports
 from config import Config
@@ -35,6 +36,14 @@ APPLICATION_NAME = "DevShare"
 state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in range(32))
 
+
+# ---------------------------------------------------------------------- #
+# ---------------------->   Database Connection   <--------------------- #
+# ---------------------------------------------------------------------- #
+
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+metadata = MetaData(bind=engine)
+session = sessionmaker(bind=engine)
 
 # -------------------------------------------------------------- #
 # --------------------->    Home Page    <---------------------- #
