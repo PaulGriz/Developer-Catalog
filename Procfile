@@ -1,2 +1,1 @@
-web unicorn run:app
-release: python manage.py db upgrade
+web: flask db upgrade; flask translate compile; gunicorn run:app

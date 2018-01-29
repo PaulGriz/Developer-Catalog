@@ -1,22 +1,17 @@
 import os
 
-from db import db, Category, Item, User
-
+from app.models import Category, Item, User
+from app import db
 from flask import session as login_session
 from flask import jsonify
 
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker
-from config import Config
 
 
 # ---------------------------------------------------------------------- #
 # ---------------------->   Database Connection   <--------------------- #
 # ---------------------------------------------------------------------- #
 
-engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-metadata = MetaData(bind=engine)
-session = sessionmaker(bind=engine)
+
 
 # ---------------------------------------------------------------------- #
 # --------------------->   Application Functions   <-------------------- #
@@ -31,8 +26,8 @@ def session_user():
 
 
 def catalogJSON():
-    categories = session.query(Category).all()
-    items = session.query(Item).all()
+    categories = Category.query.all()
+    items = Item.query.all()
     catalog = {"Category": [c.serialize for c in categories]}
     for i in catalog["Category"]:
         r = [item.serialize for item in items if item.category_id == i['id']]
@@ -50,7 +45,7 @@ def get_all_categories():
 
 
 def get_single_category(category_id):
-    category = session.query(Category).filter_by(id=category_id).one()
+    category = Category.query.filter_by(id=category_id).one()
     return category.name
 
 
@@ -59,15 +54,15 @@ def post_new_category(category_name):
         return False
     else:
         new_category = Category(name=category_name)
-        session.add(new_category)
-        session.commit()
+        db.session.add(new_category)
+        db.session.commit()
         return True
 
 
 def delete_category(category_id):
-    category = session.query(Category).filter_by(id=category_id).one()
-    session.delete(category)
-    session.commit()
+    category = Category.query.filter_by(id=category_id).one()
+    db.session.delete(category)
+    db.session.commit()
 
 
 # ---------------------------------------------------------------------- #
@@ -81,7 +76,7 @@ def get_5_newest_items():
 
 
 def count_items(category):
-    items = session.query(Item).filter_by(category_id=category.id).all()
+    items = Item.query.filter_by(category_id=category.id).all()
     total = len(list(items))
     return total
 
@@ -92,46 +87,45 @@ def createItem(category_id, itemName, description, user_id):
     else:
         newItem = Item(name=itemName, description=description,
                        category_id=category_id, user_id=user_id)
-        session.add(newItem)
-        session.commit()
+        db.session.add(newItem)
+        db.session.commit()
         return True
 
 
 def edit_item(category_id, item_id, newName, newDescription):
-    item = session.query(Item).filter_by(id=item_id).one()
+    item = Item.query.filter_by(id=item_id).one()
     if newName:
         item.name = newName
     if newDescription:
         item.description = newDescription
     if category_id:
         item.category_id = category_id
-    session.add(item)
-    session.commit()
+    db.session.add(item)
+    db.session.commit()
 
 
 def delete_item(item_id):
-    item = session.query(Item).filter_by(id=item_id).one()
-    session.delete(item)
-    session.commit()
+    item = Item.query.filter_by(id=item_id).one()
+    db.session.delete(item)
+    db.session.commit()
 
 
 # ---------------------------------------------------------------------- #
 # ------------------------>   User Functions   <------------------------ #
 # ---------------------------------------------------------------------- #
 
-
 def post_new_user(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    db.session.add(newUser)
+    db.session.commit()
+    user = User.query.filter_by(email=login_session['email']).one()
     return user.id
 
 
 def get_user_email(email):
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = User.query.filter_by(email=email).one()
         return user.id
     except BaseException:
         return None

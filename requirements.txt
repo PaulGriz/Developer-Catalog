@@ -1,9 +1,14 @@
 Flask
 Flask-RESTful
 Flask-SQLAlchemy
+Flask-Migrate
+alembic
 SQLAlchemy
 sqlalchemy.orm
+itsdangerous
 Jinja2
+requests
+urllib3
 oauth2client
 gunicorn
 psycopg2

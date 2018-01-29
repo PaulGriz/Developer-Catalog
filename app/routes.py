@@ -8,40 +8,33 @@ import requests
 
 # Flask Imports
 from flask import session as login_session
-from flask import (Flask, flash, make_response, redirect,
-                   render_template, request, url_for)
+from flask import Flask, flash, make_response, redirect, \
+    render_template, request, url_for, current_app
 
-from flask import current_app as app
 
 # Google Signin Imports
 from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
 
 # SQLAlchemy Imports
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker
+
 
 # Files From Project Imports
-from resources.functions import *
 from config import Config
-from db import db, Category, Item, User
+from app.resources.functions import *
+from app import app
+from app.models import Category, Item, User
 
-# Defining App and Connecting Database
-app = Flask(__name__, static_folder='static')
-app.config.from_object(Config)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-metadata = MetaData(bind=engine)
-session = sessionmaker(bind=engine)
 
 # Assigns the Client ID used for Google OAuth Signin
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 APPLICATION_NAME = "DevShare"
 
+
 # Generated a random 32 character string. Used for Login Sessions
 state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in range(32))
+
 
 
 # -------------------------------------------------------------- #
@@ -68,6 +61,7 @@ def home_page():
                            permission=permission,
                            session_user=session_user,
                            count_items=count_items)
+
 
 
 # -------------------------------------------------------- #
@@ -104,11 +98,9 @@ def get_category_items_page(category_id):
         permission = False
 
     permission = True
-    categories = session.query(Category).all()
-    selected_category = session.query(
-        Category).filter_by(name=category_id).one()
-    selected_category_items = session.query(Item).filter_by(
-        category_id=selected_category.id).all()
+    categories = Category.query.all()
+    selected_category = Category.query.filter_by(name=category_id).one()
+    selected_category_items = Item.query.filter_by(category_id=selected_category.id).all()
     number_of_items = count_items(selected_category)
 
     return render_template('get_category_items.html',
@@ -140,7 +132,7 @@ def post_new_category_page():
             user_id = get_user_email(login_session["email"])
 
             # Check whether the name already exists
-            all_categories = session.query(Category).all()
+            all_categories = Category.query.all()
             for category in all_categories:
                 if name == category.name:
                     flash('''This Category already exists.
@@ -158,7 +150,7 @@ def post_new_category_page():
 
         # if this is not a POST request and the user is logged in:
         permission = True
-        categories = session.query(Category).all()
+        categories = Category.query.all()
         return render_template('post_category.html', permission=permission,
                                categories=categories,
                                session_user=session_user)
@@ -186,7 +178,7 @@ def delete_category_page(category_name):
 
     elif 'username' in login_session:
         permission = True
-        category = session.query(Category).filter_by(name=category_name).one()
+        category = Category.query.filter_by(name=category_name).one()
         if request.method == 'POST':
             if request.form['delete'] == 'no':
                 return render_template('single_category.html',
@@ -234,7 +226,7 @@ def get_item_page(category_id, item_id):
     else:
         permission = False
 
-    item = session.query(Item).filter_by(name=item_id).one()
+    item = Item.query.filter_by(name=item_id).one()
     # If used to ensure query returned an item and flashes
     #   an error if no item was found.
     if item is None:
@@ -276,7 +268,7 @@ def post_new_item_page():
             category = request.form['category']
             user_id = get_user_email(login_session["email"])
 
-            all_items = session.query(Item).all()
+            all_items = Item.query.all()
             for item in all_items:
                 if name == item.name:
                     flash('''An item with name {0} already exists.
@@ -288,8 +280,7 @@ def post_new_item_page():
             new_item = createItem(category, name, description, user_id)
 
             if new_item is True:
-                owning_category = session.query(
-                    Category).filter_by(id=category).one()
+                owning_category = Category.query.filter_by(id=category).one()
                 flash("Added {0} to {1} category.".format(
                     name, owning_category.name), "success")
                 return redirect(url_for('home_page'))
@@ -299,7 +290,7 @@ def post_new_item_page():
             return redirect(url_for('home_page'))
 
         permission = True
-        categories = session.query(Category).all()
+        categories = Category.query.all()
         return render_template('post_new_item.html',
                                permission=permission,
                                categories=categories,
@@ -332,8 +323,8 @@ def delete_item_page(item_id):
         return redirect(url_for('home_page'))
 
     permission = True
-    item = session.query(Item).filter_by(name=item_id).one()
-    owner = session.query(User).filter_by(id=item.user_id).one()
+    item = Item.query.filter_by(name=item_id).one()
+    owner = User.query.filter_by(id=item.user_id).one()
 
     if login_session['user_id'] == owner.id:
         if request.method == 'POST':
@@ -351,8 +342,7 @@ def delete_item_page(item_id):
                                        deleteQuestion=False, itemCheck=True)
 
             if request.form['delete'] == 'yes':
-                selected_item = session.query(
-                    Item).filter_by(name=item_id).one()
+                selected_item = Item.query.filter_by(name=item_id).one()
                 delete_item(selected_item.id)
                 flash("{0} was deleted".format(item.name), "success")
                 return redirect(url_for('home_page'))
@@ -387,7 +377,7 @@ def delete_item_page(item_id):
 
 @app.route('/catalog/<string:item_id>/edit/', methods=['GET', 'POST'])
 def edit_item_page(item_id):
-    selected_item = session.query(Item).filter_by(name=item_id).one()
+    selected_item = Item.query.filter_by(name=item_id).one()
     if 'username' in login_session:
 
         if selected_item.user_id != login_session['user_id']:
@@ -399,7 +389,7 @@ def edit_item_page(item_id):
             description = request.form['description']
             category = request.form['category']
 
-            all_items = session.query(Item).all()
+            all_items = Item.query.all()
             for item in all_items:
                 if name == item.name:
                     flash('''This item with name "{0}" already exists.
@@ -412,8 +402,8 @@ def edit_item_page(item_id):
             return redirect(url_for('home_page'))
 
         permission = True
-        categories = session.query(Category).all()
-        item = session.query(Item).filter_by(name=item_id).one()
+        categories = Category.query.all()
+        item = Item.query.filter_by(name=item_id).one()
         return render_template('edit_item.html',
                                permission=permission,
                                session_user=session_user,
@@ -576,10 +566,3 @@ def gdisconnect():
 def json_page():
     return catalogJSON()
 
-
-if __name__ == '__main__':
-    from db import db
-    db.create_all()
-    db.init_app(app)
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
