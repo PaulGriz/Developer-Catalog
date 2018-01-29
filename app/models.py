@@ -7,8 +7,8 @@ class User(db.Model):
     name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), nullable=False)
     picture = db.Column(db.String(250))
-    category = db.relationship('Category', lazy='dynamic')
-    item = db.relationship('User', lazy='dynamic')
+    categories = db.relationship('Category')
+    items = db.relationship('Item')
 
 
 class Category(db.Model):
@@ -16,6 +16,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    items = db.relationship('Item')
 
     @property
     def serialize(self):
@@ -29,7 +30,6 @@ class Item(db.Model):
     name = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(250))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    category = db.relationship('Category')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @property
