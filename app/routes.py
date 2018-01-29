@@ -36,7 +36,6 @@ state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in range(32))
 
 
-
 # -------------------------------------------------------------- #
 # --------------------->    Home Page    <---------------------- #
 # -------------------------------------------------------------- #
@@ -61,7 +60,6 @@ def home_page():
                            permission=permission,
                            session_user=session_user,
                            count_items=count_items)
-
 
 
 # -------------------------------------------------------- #
@@ -100,7 +98,8 @@ def get_category_items_page(category_id):
     permission = True
     categories = Category.query.all()
     selected_category = Category.query.filter_by(name=category_id).one()
-    selected_category_items = Item.query.filter_by(category_id=selected_category.id).all()
+    selected_category_items = Item.query.filter_by(
+        category_id=selected_category.id).all()
     number_of_items = count_items(selected_category)
 
     return render_template('get_category_items.html',
@@ -565,4 +564,3 @@ def gdisconnect():
 @app.route('/catalog/json')
 def json_page():
     return catalogJSON()
-
