@@ -33,8 +33,7 @@ from config import BaseConfig
 from models.database import Base, Category, Item, User
 
 # Assigns the Client ID used for Google OAuth Signin
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
-    'web']['client_id']
+CLIENT_ID = "173875917603-d9pnthbohkars23b0dlep2vns6n8hk9a.apps.googleusercontent.com"
 APPLICATION_NAME = "DevShare"
 
 
