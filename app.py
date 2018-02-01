@@ -44,7 +44,7 @@ state = ''.join(random.choice(string.ascii_uppercase + string.digits)
 
 
 # Defining App
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__)
 app.config.from_object(BaseConfig)
 
 # Connecting Database
