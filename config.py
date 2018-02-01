@@ -2,6 +2,7 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class BaseConfig(object):
     DEBUG = True
     TESTING = False
@@ -13,6 +14,7 @@ class BaseConfig(object):
 class StagingConfig(BaseConfig):
     DEVELOPMENT = True
     DEBUG = True
+
 
 class DevelopmentConfig(BaseConfig):
     DEVELOPMENT = True

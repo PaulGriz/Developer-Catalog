@@ -5,6 +5,8 @@ from flask import jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from config import BaseConfig
+
+
 # ---------------------------------------------------------------------- #
 # ---------------------->   Database Connection   <--------------------- #
 # ---------------------------------------------------------------------- #

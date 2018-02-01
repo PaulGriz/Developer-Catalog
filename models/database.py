@@ -47,7 +47,6 @@ class Item(Base):
                 'description': self.description}
 
 
-
 engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI)
 
 Base.metadata.create_all(engine)

@@ -10,12 +10,12 @@ import requests
 from flask import session as login_session
 
 from flask import (
-    Flask, 
-    flash, 
-    make_response, 
+    Flask,
+    flash,
+    make_response,
     redirect,
-    render_template, 
-    request, 
+    render_template,
+    request,
     url_for
 )
 
