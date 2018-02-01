@@ -1,12 +1,16 @@
 Flask
 Flask-SQLAlchemy
 Flask-Migrate
+Flask-HTTPAuth
 alembic
 SQLAlchemy
 itsdangerous
 Jinja2
 requests
+html5lib
+httplib2
 urllib3
 oauth2client
+webencodings
 gunicorn
 psycopg2
