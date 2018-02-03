@@ -49,6 +49,5 @@
 1. To post content, you must first sign in. 
     - Login botton is located in the top right. 
 
-Removed ENV from Project for Submission Limitations
 
 ---
