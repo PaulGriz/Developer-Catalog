@@ -1,8 +1,6 @@
 Flask
 Flask-SQLAlchemy
-Flask-Migrate
 Flask-HTTPAuth
-alembic
 SQLAlchemy
 itsdangerous
 Jinja2
