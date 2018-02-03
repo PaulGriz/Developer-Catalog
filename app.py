@@ -46,7 +46,7 @@ state = ''.join(random.choice(string.ascii_uppercase + string.digits)
 app = Flask(__name__)
 app.config.from_object(BaseConfig)
 
-# Connecting Database
+# Connecting to Database
 engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI)
 Base.metadata.bind = engine
 db_session = sessionmaker(bind=engine)
