@@ -7,7 +7,8 @@ class BaseConfig(object):
     DEBUG = True
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'impossible-to-crack'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    # SQLite Database used for local Development Only.
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///developer-catalog.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

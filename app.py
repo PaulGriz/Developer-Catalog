@@ -8,7 +8,6 @@ import requests
 
 # Flask Imports
 from flask import session as login_session
-
 from flask import (
     Flask,
     flash,
@@ -33,7 +32,8 @@ from config import BaseConfig
 from models.database import Base, Category, Item, User
 
 # Assigns the Client ID used for Google OAuth Signin
-CLIENT_ID = "173875917603-d9pnthbohkars23b0dlep2vns6n8hk9a.apps.googleusercontent.com"
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
 APPLICATION_NAME = "DevShare"
 
 
@@ -162,7 +162,8 @@ def post_new_category_page():
                 flash("{0} was successfully add.".format(name), "success")
                 return redirect(url_for('home_page'))
 
-            flash("Category not added. Needed: New Category's Name", "danger")
+            flash("Category was not added.", "danger")
+            flash("Needed: [Name for New Category]", "danger")
             return redirect(url_for('home_page'))
 
         # if this is not a POST request and the user is logged in:
